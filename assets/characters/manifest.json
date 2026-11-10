@@ -1,0 +1,162 @@
+{
+  "assets/characters/nanwoni/night.webp": {
+    "sha256": "b8bfdcdd9a2dc810dc4c96fdd1828dcb379c905b8601af93f912ce53dced4f8e",
+    "bytes": 46284
+  },
+  "assets/characters/nanwoni/surprised.webp": {
+    "sha256": "d541f1315d4556844746e5e106ae9cadcf7f549f3f84d0f0ce0ff8e2a3a31c13",
+    "bytes": 45680
+  },
+  "assets/characters/nanwoni/normal.webp": {
+    "sha256": "91c20039782ab739c5a2d934b6fdf0ef984ee79597117553dcd2056638dc86cb",
+    "bytes": 42144
+  },
+  "assets/characters/nanwoni/avatar.webp": {
+    "sha256": "1c26c380dbb4f0a88c91ecc0b26aba8a2a44ba4cdf73841735cbcaff747be6ae",
+    "bytes": 8396
+  },
+  "assets/characters/moya/night.webp": {
+    "sha256": "1666f3fa569e206504e703cc3b56462ee36d117fcaa8047d53afcb7959de4263",
+    "bytes": 63072
+  },
+  "assets/characters/moya/surprised.webp": {
+    "sha256": "65001671a06faead141160f06c4f35a376affa2fc7a6909a10381b83557a5712",
+    "bytes": 63562
+  },
+  "assets/characters/moya/normal.webp": {
+    "sha256": "f0a3e1bcdcf030b96794f1d17f2fab9d11a9661759f120fbcba633816cc67956",
+    "bytes": 62318
+  },
+  "assets/characters/moya/avatar.webp": {
+    "sha256": "2735295f73e5d9274d493c96972fb7239fe3d5fcbe3f43aa1fd3842032daa9ba",
+    "bytes": 9308
+  },
+  "assets/characters/yamuji/night.webp": {
+    "sha256": "2965d90956d7e196475cc84ba08889fec3cc3de16ad6d52793e35cef8ae23a41",
+    "bytes": 58492
+  },
+  "assets/characters/yamuji/surprised.webp": {
+    "sha256": "53d4ec70a928fdbf3c84f90473b8bdb2a03d517fddce396e6e9d578096e949b7",
+    "bytes": 63786
+  },
+  "assets/characters/yamuji/normal.webp": {
+    "sha256": "f91b4d3fc02326f00fa928d1d42c1c94954c6d4952ee1e9a0f09d4f343e19478",
+    "bytes": 55738
+  },
+  "assets/characters/yamuji/avatar.webp": {
+    "sha256": "647e1089984507e9f1c2170c43d28c63090e10f62e57b8743420b78e761268ed",
+    "bytes": 8992
+  },
+  "assets/characters/manjo/night.webp": {
+    "sha256": "ec9ca568f91bb8417e6a60dab292d0cd81501fa918c870ea534e453745bf1230",
+    "bytes": 49532
+  },
+  "assets/characters/manjo/surprised.webp": {
+    "sha256": "8eb210c256d70561abc762855a5301e28cec54f484a22a8f3a6e9d6ff5a90135",
+    "bytes": 56048
+  },
+  "assets/characters/manjo/normal.webp": {
+    "sha256": "2276f110b8896397f589af8de592479fbc34b4025d0c1408dad40e4901e839b4",
+    "bytes": 50242
+  },
+  "assets/characters/manjo/avatar.webp": {
+    "sha256": "dba444b8ff342258c0aa9a8ae8ff2769cc24ade508494e9e300310f800cd0a43",
+    "bytes": 7760
+  },
+  "assets/characters/harunotsuki/night.webp": {
+    "sha256": "966e94a58773b924b6869a463db9317a3043638199d93e5a110c7933f9427211",
+    "bytes": 57720
+  },
+  "assets/characters/harunotsuki/surprised.webp": {
+    "sha256": "d1b959aa82e6adacd0bc41f6306b6f4c7116f97f6a3044e7a0a46bfee9338107",
+    "bytes": 58462
+  },
+  "assets/characters/harunotsuki/normal.webp": {
+    "sha256": "d9cb2ab85156e628792a6523ae2ba761d014e13e89752e2743914306b56dd990",
+    "bytes": 55414
+  },
+  "assets/characters/harunotsuki/avatar.webp": {
+    "sha256": "20065d5a7094daf35ed8da6facc9d0e4c4ed86eb4560c529b39b9a633a297609",
+    "bytes": 7368
+  },
+  "assets/characters/damyu/night.webp": {
+    "sha256": "1c7d9b918c9aeb86b02d3da4e98fae274a298a9b55e9e7e7daf73a30e1f5fbfc",
+    "bytes": 47480
+  },
+  "assets/characters/damyu/surprised.webp": {
+    "sha256": "167ce56055c71c9f53b857f8ffb21407e970088da48f4d4113850f571f8f21d6",
+    "bytes": 45072
+  },
+  "assets/characters/damyu/normal.webp": {
+    "sha256": "24ce532f77d98fec76bf5ba0e48e897a5a3b140dbab268e437a77c138d232252",
+    "bytes": 40024
+  },
+  "assets/characters/damyu/avatar.webp": {
+    "sha256": "f288b825c5a2ddf63af1321620763ec10ce6436c0d350a715dd5398d02e865ea",
+    "bytes": 6442
+  },
+  "assets/characters/kkutinyu/night.webp": {
+    "sha256": "f9a29eb1b5cad61f0bac0397e5acfcef7fd2a202fe6d6c7b3823a28cd5342a37",
+    "bytes": 35904
+  },
+  "assets/characters/kkutinyu/surprised.webp": {
+    "sha256": "f191c95ca174eabc07d9b2e8314ac9f4912a9eccce0d4854b0360da673ea49f6",
+    "bytes": 43648
+  },
+  "assets/characters/kkutinyu/normal.webp": {
+    "sha256": "044a28d9f54c04aa10820cd78062ff679ba8edade1d70a604cc35ec054fb419d",
+    "bytes": 31816
+  },
+  "assets/characters/kkutinyu/avatar.webp": {
+    "sha256": "6b996ba5862753698f954adbc70aeb23764b12a34d82fae21bbde781a76715ee",
+    "bytes": 6782
+  },
+  "assets/characters/yappu/night.webp": {
+    "sha256": "2706501af24199229a1feb1bc90bdfc50ce533b8cf11ce4e2f70c6c9d5a61bfd",
+    "bytes": 64128
+  },
+  "assets/characters/yappu/surprised.webp": {
+    "sha256": "05bd5d4f31279640405e8e5ef988639f3dd6b10896a05281d13ccd845d6f12ca",
+    "bytes": 66846
+  },
+  "assets/characters/yappu/normal.webp": {
+    "sha256": "99afde6821c4981e1762c95c0b319de9c0b285c1f0842e67e56c95986067d5c8",
+    "bytes": 53914
+  },
+  "assets/characters/yappu/avatar.webp": {
+    "sha256": "d0b80ed11012a8b58f47316da40b726d190f53050c1d85c61619960a64012e62",
+    "bytes": 8580
+  },
+  "assets/characters/yuntami/night.webp": {
+    "sha256": "a8adb1a45900f1caa297d9062d1ad81852c97fced5a620ad5f8bfe90f2ccb464",
+    "bytes": 39058
+  },
+  "assets/characters/yuntami/surprised.webp": {
+    "sha256": "15be5ecd01a3fa168db6985d1ed25cb78abf62d77937a869f8b71e2f6c127989",
+    "bytes": 40488
+  },
+  "assets/characters/yuntami/normal.webp": {
+    "sha256": "0594828d0c63c16fe2c70221fda2daf542fae5cbdc5c4b184444657fb689da4d",
+    "bytes": 38076
+  },
+  "assets/characters/yuntami/avatar.webp": {
+    "sha256": "c11583d1e02b4a359a41e13c5703e3dc40b3432188f434fe5953e2f5abfa99d4",
+    "bytes": 5888
+  },
+  "assets/characters/kimokdok/night.webp": {
+    "sha256": "6017a919116122e55dc89a9ce1376646eb8862d41cd6db7eef491701cd86437f",
+    "bytes": 42528
+  },
+  "assets/characters/kimokdok/surprised.webp": {
+    "sha256": "63d73e72a4d93e9b7004e22cb7d03912205d21a070cb6c60a2701d4b936e2440",
+    "bytes": 52820
+  },
+  "assets/characters/kimokdok/normal.webp": {
+    "sha256": "16a1eebd5dfc09ec7d6a5b1cb7cd5b1756a77beda22cfe427be319f488231825",
+    "bytes": 42442
+  },
+  "assets/characters/kimokdok/avatar.webp": {
+    "sha256": "e8ef7e22c89dd8f8157a36b704bf8e44dbcaae139da34ccb896fe4e4964d703d",
+    "bytes": 6578
+  }
+}
