@@ -77,7 +77,8 @@ function save(){if(!state)return;try{localStorage.setItem(KEY,JSON.stringify(sta
 function has(id){return !!state?.evidence.includes(id);}
 function solved(id){return !!state?.solved.includes(id);}
 function getRoom(){return ROOMS.find(r=>r.id===state.room)||ROOMS[0];}
-function portrait(name){return PERSON[name]?`assets/characters/${PERSON[name]}/night.webp`:null;}
+const GUEST_PORTRAITS={'박태성':'taesung','탁태성':'taesung','최도식':'dosik','오세린':'serin'};
+function portrait(name){if(GUEST_PORTRAITS[name])return `assets/characters/guests/${GUEST_PORTRAITS[name]}.webp`;return PERSON[name]?`assets/characters/${PERSON[name]}/night.webp`:null;}
 function warm(src){if(!src)return Promise.resolve();if(loadedImages.has(src))return loadedImages.get(src);const img=new Image();img.src=src;const promise=img.decode?img.decode().catch(()=>null):new Promise(r=>{img.onload=img.onerror=r;});loadedImages.set(src,promise);return promise;}
 function say(lines,callback=null){afterDialogue=callback;modal={type:'dialogue',lines,index:0,loading:false};lines.forEach(l=>warm(portrait(l[0])));prepareLine();}
 async function prepareLine(){if(modal?.type!=='dialogue')return;const ticket=++sequence,src=portrait(modal.lines[modal.index][0]);modal.loading=!!src;render();await warm(src);if(sequence!==ticket||modal?.type!=='dialogue')return;modal.loading=false;render();}

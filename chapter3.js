@@ -64,7 +64,8 @@ function confronted(id){return !!state?.confronted.includes(id);}
 function save(){if(!state)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch{console.warn('진행 저장에 실패했습니다.');}}
 function showToast(message){toast=message;render();clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toast='';render();},3500);}
 function log(message){state.log=[...(state.log||[]),message].slice(-40);}
-function portrait(name,type='night'){return PERSON[name]?`assets/characters/${PERSON[name]}/${type}.webp`:null;}
+const GUEST_PORTRAITS={'박태성':'taesung','탁태성':'taesung','최도식':'dosik','오세린':'serin'};
+function portrait(name,type='night'){if(GUEST_PORTRAITS[name])return `assets/characters/guests/${GUEST_PORTRAITS[name]}.webp`;return PERSON[name]?`assets/characters/${PERSON[name]}/${type}.webp`:null;}
 const images=new Map();function warm(src){if(!src)return Promise.resolve();if(images.has(src))return images.get(src);const p=new Image();p.src=src;const ready=(p.decode?p.decode():new Promise((res,rej)=>{p.onload=res;p.onerror=rej;})).catch(()=>null);images.set(src,ready);return ready;}
 async function prepareDialogue(){if(modal?.kind!=='dialogue')return;const token=++sequence;const row=modal.lines[modal.index];const src=portrait(row[0],row[2]||'night');modal.loading=Boolean(src);render();if(src)await warm(src);if(token!==sequence||modal?.kind!=='dialogue')return;modal.loading=false;render();}
 function speak(lines,then=null){afterDialogue=then;modal={kind:'dialogue',lines,index:0,loading:false};for(const row of lines){const img=portrait(row[0],row[2]||'night');if(img)warm(img);}prepareDialogue();}
