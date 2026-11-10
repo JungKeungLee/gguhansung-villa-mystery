@@ -44,9 +44,10 @@
   const PLACES = [
     {id:'exterior',label:'별장 외관',sub:'안개 내려앉은 산길과 불 밝힌 별장',num:'00'},
     {id:'living',label:'별장 거실',sub:'따뜻한 벽난로와 오래된 시계',num:'01'},
-    {id:'foyer',label:'현관과 복도',sub:'여행 가방과 투숙객 안내문',num:'02'},
-    {id:'kitchen',label:'주방과 식당',sub:'저녁 준비와 작은 소란',num:'03'},
-    {id:'terrace',label:'별장 테라스',sub:'산길과 안개 낀 숲',num:'04'}
+    {id:'foyer',label:'별장 현관',sub:'여행 가방과 투숙객 안내문',num:'02'},
+    {id:'corridor',label:'1층 복도',sub:'객실로 이어진 긴 복도',num:'03'},
+    {id:'kitchen',label:'주방과 식당',sub:'저녁 준비와 작은 소란',num:'04'},
+    {id:'terrace',label:'별장 테라스',sub:'산길과 안개 낀 숲',num:'05'}
   ];
   // CH1의 사진과 메모는 '증거'가 아닌 평범한 여행 기록이다.
   const CLUES = {
@@ -60,7 +61,7 @@
   };
   const GOALS = {
     day:[['clue','photo','기념사진 다시 보기','거실에서 사진을 눌러 볼 수 있어.'],['clue','guest-list','별장 안내문 구경','현관의 안내문을 살펴봐.']],
-    dinner:[['clue','meal','저녁 식탁 구경','주방에 가면 친구들과 나눈 이야기가 있어.'],['clue','argument','바비큐 사진 보기','주방 근처 복도에서 테라스 사진을 볼 수 있어.']],
+    dinner:[['clue','meal','저녁 식탁 구경','주방에 가면 친구들과 나눈 이야기가 있어.'],['clue','argument','바비큐 사진 보기','1층 복도에서 친구가 보여주는 사진을 볼 수 있어.']],
     late:[['clue','arrival-photo','늦게 온 친구들 환영','현관의 사진을 확인해 봐.'],['clue','cctv','단체사진 보기','현관의 작은 화면도 눌러 볼 수 있어.']],
     night:[['clue','storm','테라스에서 날씨 보기','테라스에서 밖의 풍경을 볼 수 있어.']]
   };
@@ -86,9 +87,13 @@
       {id:'cctv',label:'CCTV 화면',x:23,y:45,when:['late','night']},
       {id:'luggage',label:'여행 가방',x:45,y:83,when:['day','dinner']}
     ],
+    corridor:[
+      {id:'argument',label:'복도에서 들리는 말',x:76,y:42,when:['dinner','late','night']},
+      {id:'guest-doors',label:'객실 문',x:87,y:67,when:['day','dinner','late','night']},
+      {id:'hall-paintings',label:'복도 그림',x:34,y:49,when:['day','dinner','late','night']}
+    ],
     kitchen:[
       {id:'meal',label:'저녁 식탁',x:49,y:75,when:['dinner','late','night']},
-      {id:'argument',label:'복도에서 들리는 말',x:82,y:43,when:['dinner','late','night']},
       {id:'fridge',label:'냉장고',x:19,y:55,when:['day','dinner','late','night']}
     ],
     terrace:[
@@ -215,7 +220,10 @@
       };
       lines(fresh?scripts[id]:[['내레이션',`「${clue.title}」을 다시 확인했다.`],[state.name,clue.text]]);
     }else{
-      const flavor={fireplace:[['내레이션','벽난로의 장작이 타닥타닥 타오른다.']],clock:[['내레이션','배터리로 움직이는 벽시계가 규칙적으로 소리를 낸다.']],luggage:[['내레이션','가방들이 현관 옆에 쌓여 있다.']],fridge:[['내레이션','냉장고에는 음식과 음료가 가득하다.']],view:[['내레이션','멀리 산과 숲이 펼쳐져 있고 안개가 조금씩 밀려온다.']],car:[['내레이션','주차장에 차가 몇 대 세워져 있다. 아직 누구의 차인지 다 알지는 못한다.']]};
+      const flavor={fireplace:[['내레이션','벽난로의 장작이 타닥타닥 타오른다.']],clock:[['내레이션','배터리로 움직이는 벽시계가 규칙적으로 소리를 낸다.']],luggage:[['내레이션','가방들이 현관 옆에 쌓여 있다.']],fridge:[['내레이션','냉장고에는 음식과 음료가 가득하다.']],
+        'guest-doors':[['내레이션','나란히 이어진 객실 문 앞에 여행가방이 놓여 있다. 새로 도착한 친구들은 어느 방을 쓸지 이야기 중이다.']],
+        'hall-paintings':[['내레이션','복도 벽에는 오래된 산 풍경 그림들이 걸려 있다. 여행 온 첫날에는 그저 장식처럼 보인다.']],
+        view:[['내레이션','멀리 산과 숲이 펼쳐져 있고 안개가 조금씩 밀려온다.']],car:[['내레이션','주차장에 차가 몇 대 세워져 있다. 아직 누구의 차인지 다 알지는 못한다.']]};
       lines(flavor[id]||[['내레이션','특별한 것은 보이지 않는다.']]);
     }
   }
@@ -284,7 +292,18 @@
   function sceneFoyer(night){return `<svg class="scene-art" role="img" aria-label="별장 현관 배경" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid slice">${baseRoom(night)}<rect x="337" y="70" width="315" height="361" fill="#211f27" stroke="#a58c70" stroke-width="22"/><rect x="359" y="94" width="271" height="324" fill="#514542"/><rect x="387" y="120" width="214" height="268" fill="#3b393c" stroke="#927b5f" stroke-width="8"/><rect x="416" y="155" width="159" height="95" fill="url(#sky)"/><path d="M416 249 470 172 530 244l45-55v61Z" fill="#1a313e"/><circle cx="569" cy="325" r="9" fill="#e5bf7c"/><rect x="700" y="131" width="209" height="197" fill="#e2d5b5" stroke="#584b43" stroke-width="15"/><path d="M725 165h150m-150 25h130m-130 25h138m-138 25h101m-101 25h146" stroke="#8e816c" stroke-width="8" opacity=".65"/><rect x="150" y="171" width="157" height="111" rx="7" fill="#1d2939" stroke="#827e77" stroke-width="9"/><rect x="169" y="187" width="119" height="70" fill="#4c667a"/><path d="M183 231 209 207h22l22 24h15" stroke="#c2d7c4" stroke-width="5" fill="none"/><circle cx="285" cy="283" r="6" fill="#ddad6f"/><rect x="460" y="419" width="132" height="71" rx="9" fill="#775461" stroke="#392d37" stroke-width="9"/><path d="M485 426v-24h82v24" fill="none" stroke="#bda184" stroke-width="9"/><rect x="248" y="448" width="157" height="73" rx="13" fill="#3b5362" stroke="#222a34" stroke-width="10"/><path d="M275 453v-18h92v18" stroke="#b2ab98" stroke-width="7" fill="none"/><path d="M85 415h77l28 68H57Z" fill="#607467"/><path d="M128 415v-99" stroke="#3a4b40" stroke-width="13"/><path d="M128 355q-75-20-49-69 59 15 49 69m0-19q60-49 81-4-55 34-81 4" fill="#546b58"/><rect width="1000" height="560" fill="#101a2b" opacity="${night?.45:.04}"/></svg>`}
   function sceneKitchen(night){return `<svg class="scene-art" role="img" aria-label="별장 주방과 식당 배경" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid slice">${baseRoom(night)}<rect x="89" y="110" width="216" height="240" fill="#413c43" stroke="#9c8061" stroke-width="12"/><rect x="108" y="127" width="181" height="202" fill="#b9ad98"/><rect x="111" y="227" width="181" height="8" fill="#746457"/><rect x="165" y="137" width="9" height="187" fill="#796353"/><g fill="#587064"><rect x="128" y="158" width="32" height="59" rx="4"/><rect x="185" y="149" width="35" height="67" rx="4"/><rect x="230" y="157" width="36" height="61" rx="4"/></g><rect x="680" y="97" width="245" height="327" fill="#2c2730" stroke="#826952" stroke-width="13"/><rect x="703" y="119" width="197" height="283" fill="#4a3e3c"/><rect x="714" y="145" width="172" height="190" fill="#302f39"/><circle cx="877" cy="290" r="7" fill="#d2b080"/><path d="M340 70v150m-9 0h60l-18 33h-24Z" fill="#eac792" stroke="#a48260" stroke-width="9"/><circle cx="362" cy="217" r="125" fill="url(#lamp)"/><path d="M290 358 740 358 840 423 195 423Z" fill="#9e785b" stroke="#503d38" stroke-width="12"/><path d="M231 417v118m550-118v118" stroke="#61483f" stroke-width="25"/><ellipse cx="520" cy="346" rx="120" ry="29" fill="#e0d2b0" stroke="#746551" stroke-width="7"/><ellipse cx="520" cy="343" rx="93" ry="17" fill="#a24d3a"/><ellipse cx="395" cy="368" rx="57" ry="23" fill="#e2d6bd" stroke="#746551" stroke-width="6"/><ellipse cx="662" cy="368" rx="50" ry="23" fill="#e2d6bd" stroke="#746551" stroke-width="6"/><path d="M364 364q30-29 64 0" stroke="#51704c" stroke-width="10" fill="none"/><path d="M644 361q25-33 43-4" stroke="#726a44" stroke-width="10" fill="none"/><rect x="66" y="334" width="135" height="112" fill="#313b47" stroke="#93806c" stroke-width="8"/><circle cx="150" cy="384" r="20" fill="#bd8970"/><circle cx="103" cy="384" r="20" fill="#74917f"/><rect width="1000" height="560" fill="#101a2b" opacity="${night?.43:.05}"/></svg>`}
   function sceneTerrace(night){return `<svg class="scene-art" role="img" aria-label="안개 낀 별장 테라스 배경" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid slice">${artDefs()}<rect width="1000" height="560" fill="url(#sky)"/><circle cx="790" cy="100" r="46" fill="${night?'#dadce1':'#f6d79d'}" opacity=".6"/><path d="M0 355 155 115 314 320 475 100 780 340 900 215 1000 290v270H0Z" fill="#263d50"/><path d="M0 399 152 243 325 387 548 203 765 375 1000 250v310H0Z" fill="#203343"/>${Array.from({length:22},(_,i)=>{let x=i*53-33;let y=215+(i%4)*26;return `<path d="M${x} 446v-${175+(i%2)*40}m-37 111 37-${170+(i%2)*40} 38 ${170+(i%2)*40}" stroke="#1a3339" stroke-width="12" fill="none" opacity=".85"/>`;}).join('')}<path d="M0 417h1000v143H0Z" fill="#554d4e"/><path d="M0 417h1000" stroke="#bdac8d" stroke-width="18"/><path d="M0 417v-65m150 65v-65m170 65v-65m170 65v-65m170 65v-65m170 65v-65m170 65v-65" stroke="#c1b297" stroke-width="15"/><path d="M0 351h1000" stroke="#bdae92" stroke-width="17"/><path d="M10 490h980m-850 70 30-140m100 140 30-140m100 140 30-140m100 140 30-140m100 140 30-140m100 140 30-140m100 140 30-140" stroke="#a59680" opacity=".4" stroke-width="4"/><path d="M100 430h212l45 39H58Z" fill="#243746" stroke="#748390" stroke-width="6"/><path d="M126 430 161 383h121l34 47Z" fill="#354e61" stroke="#748390" stroke-width="5"/><circle cx="119" cy="473" r="19" fill="#171f2a" stroke="#657481" stroke-width="6"/><circle cx="291" cy="473" r="19" fill="#171f2a" stroke="#657481" stroke-width="6"/><ellipse cx="550" cy="310" rx="500" ry="110" fill="url(#fog)"/><ellipse cx="720" cy="445" rx="450" ry="100" fill="url(#fog)"/><rect width="1000" height="560" fill="#0a1725" opacity="${night?.32:.02}"/>${night?Array.from({length:44},(_,i)=>{let x=(i*131)%1000,y=(i*67)%540;return `<path d="M${x} ${y}l-10 30" stroke="#b8cfdf" stroke-width="2" opacity=".38"/>`}).join(''):''}</svg>`}
-  function sceneArt(){return state.location==='exterior'?`<img class="scene-art scene-photo ${state.phase==='night'?'scene-photo-night':''}" src="assets/backgrounds/villa-exterior.webp" alt="안개가 내려앉은 산속 별장의 외관" loading="eager" decoding="async">`:state.location==='living'?sceneLiving(state.phase==='night'):state.location==='foyer'?sceneFoyer(state.phase==='night'):state.location==='kitchen'?sceneKitchen(state.phase==='night'):sceneTerrace(state.phase==='night');}
+  const SCENE_BACKGROUND_IMAGES = Object.freeze({
+    exterior:['villa-exterior.webp','산속에 자리한 안개 낀 별장 외관'],
+    living:['living.webp','벽난로와 커다란 창이 있는 따뜻한 별장 거실'],
+    kitchen:['kitchen.webp','큰 식탁과 조명이 있는 별장 주방과 식당'],
+    corridor:['corridor.webp','객실로 이어지는 나무 복도와 문들'],
+    terrace:['terrace.webp','산과 숲이 보이는 밤의 별장 테라스']
+  });
+  function sceneArt(){
+    const bg=SCENE_BACKGROUND_IMAGES[state.location];
+    if(bg) return `<img class="scene-art scene-photo ${state.phase==='night'?'scene-photo-night':''}" src="assets/backgrounds/${bg[0]}" alt="${bg[1]}" loading="eager" decoding="async">`;
+    return sceneFoyer(state.phase==='night');
+  }
   function renderLanding(){return `<div class="app-shell"><main class="landing"><header class="landing-header"><div class="brand"><span class="brand-mark">✦</span><span>꾸한성 미스터리 프로젝트</span></div><span class="note">INTERACTIVE DETECTIVE STORY · CHAPTER 01</span></header><section class="landing-main"><div class="landing-copy"><div class="mini-title"><span class="tag">FIRST PLAYABLE CHAPTER</span><span class="upper">CASE 00 / PROLOGUE</span></div><h1>별장 여행에<br/><em>함께할래?</em></h1><p class="synopsis">열 명의 친구들과 떠난 조금 특별한 여행.<br/>웃음으로 시작한 그날 밤, 별장에선 아무도 예상하지 못한 일이 벌어진다.<br/><strong style="color:#f0dfc3">오늘은 그냥 함께 놀러 온 열한 번째 여행 친구다.</strong></p><div class="meta"><span>✦ 스토리형 추리</span><span>✦ PC · 모바일</span><span>✦ 로컬 자동 저장</span><span>✦ 챕터 1 공개</span></div><label class="nickname-label" for="nickname">어떤 이름으로 불리고 싶어?</label><div class="nickname-row"><input class="nickname-input" id="nickname" maxlength="12" placeholder="여행에서 사용할 닉네임 (최대 12자)" value="${esc(introName)}" autocomplete="nickname" /><button class="btn btn-primary" data-action="start">여행 시작 ${icon('arrow')}</button></div><div class="start-buttons">${state?`<button class="btn btn-secondary" data-action="resume">${state.phase==='complete'?'기록 확인':'이어하기'} ${icon('arrow')}</button><button class="btn btn-ghost" data-action="confirm-reset">진행 초기화</button>`:''}</div><div class="landing-alert" aria-live="polite">${esc(showToast)}</div></div><div class="landing-visual"><div class="landing-picture"><img class="landing-hero-img" src="assets/backgrounds/villa-main.webp" alt="꾸한성 멤버 열 명이 별장 앞에서 여행 사진을 찍은 메인 일러스트, 꾸한성: 안개 속 별장" fetchpriority="high" decoding="async" /></div></div></section><footer class="landing-foot"><span>이 작품은 팬 창작 게임이며, 등장인물과 사건은 모두 허구입니다.</span><span>v0.1 · 데모 · 이후 챕터 미공개</span></footer></main></div>`;}
   function notebookContent(){
     if(notebookTab==='clues'){

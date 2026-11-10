@@ -36,3 +36,15 @@ python -m http.server 8000
 이미지 경로와 GIF가 아닌 WebP 40개를 검증했고, JavaScript 구문 검사(`node --check game.js`)를 통과했습니다.
 
 모든 등장인물의 대사와 사건은 현실 인물과 관련 없는 팬게임용 허구입니다.
+
+## 별장 실내 배경 업데이트
+
+- `assets/backgrounds/living.webp`: 거실
+- `assets/backgrounds/kitchen.webp`: 주방·식당
+- `assets/backgrounds/corridor.webp`: 새 탐색 장소인 1층 복도
+- `assets/backgrounds/terrace.webp`: 테라스
+- 기존 별장 외관/메인 배너/캐릭터 이미지는 변경하지 않음
+- 현관(기존 SVG)을 유지하고, 복도를 별도 장소로 추가
+- 기존 자동 저장 키 및 대사 진행 상태 유지
+
+이미지 최적화: 1400×788 WebP, quality 77. 정전 단계에는 CSS로 밝기를 살짝 낮춥니다.

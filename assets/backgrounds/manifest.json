@@ -1,0 +1,26 @@
+{
+  "assets/backgrounds/corridor.webp": {
+    "bytes": 158272,
+    "sha256": "2dc52afb1cd9eeccc40b9507fca1e0ac79132519f8c0ef000c9fea606c825a0e"
+  },
+  "assets/backgrounds/villa-main.webp": {
+    "bytes": 226338,
+    "sha256": "b8e1e3653041219c8f25a25fcc6cdd3aff7caee359b2184b95308a108433225f"
+  },
+  "assets/backgrounds/villa-exterior.webp": {
+    "bytes": 176578,
+    "sha256": "80077c8a6f602215c5e4ee427d8bde094f169c800f1bcad67564cad43ebcb90b"
+  },
+  "assets/backgrounds/kitchen.webp": {
+    "bytes": 194044,
+    "sha256": "5c86e20eea3d45be5794b2864d1f72d01f6957fce2c97273f643a4e35e4b3ff2"
+  },
+  "assets/backgrounds/terrace.webp": {
+    "bytes": 212956,
+    "sha256": "b3cc9bc8c900c6805c6fd3c8b8e89afd23912b1931b42c11514491a8e23e04dd"
+  },
+  "assets/backgrounds/living.webp": {
+    "bytes": 211850,
+    "sha256": "1535525786af2b492ec283226b505c606fb40f401f0c846bc38c7a0c0e2f284a"
+  }
+}
