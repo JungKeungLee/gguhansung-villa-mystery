@@ -78,3 +78,8 @@
 .ch5 .ch5-suspect-board img{width:100%;height:auto;display:block;border:1px solid #576783;border-radius:12px;background:#10192c}
 .ch5 .ch5-suspect-board figcaption{font-size:12px;color:#aab9cc;line-height:1.5}
 .ch5 .ch5-suspect-board a:focus-visible{outline:3px solid #f5d18d;outline-offset:3px;border-radius:12px}
+
+/* Distinct visual moods for the three existing Chapter 5 endings. */
+.ch5 .ch5-finish.bad .finish-art{background-image:linear-gradient(rgba(10,14,29,.44),rgba(10,14,29,.44)),url('assets/backgrounds/villa-exterior.webp');filter:saturate(.6)}
+.ch5 .ch5-finish.normal .finish-art{background-image:url('assets/backgrounds/ch5-ending-villa-dawn.webp');filter:saturate(.82)}
+.ch5 .ch5-finish.true .finish-art{background-image:url('assets/backgrounds/ch5-true-ending-sunrise.webp');filter:none}
