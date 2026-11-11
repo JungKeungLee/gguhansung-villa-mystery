@@ -34,12 +34,18 @@ const E={
  E12:{name:'차량 블랙박스 부분 영상',where:'테라스 · 장도윤',text:'장도윤이 제공한 차량 영상에는 정전 중 22:27경 외부 통로에서 붉은 빛이 이동하는 모습이 찍혀 있다. 어둡고 비가 내려 인물은 식별할 수 없다.'}
 };
 const EVIDENCE_IMAGES = {
+  E01:'assets/evidence/e01-outage-nvr-1541.webp',
+  E02:'assets/evidence/e02-living-room-cctv-2205.webp',
+  E03:'assets/evidence/e03-nvr-wallclock-223413.webp',
+  E04a:'assets/evidence/e04a-group-photo-2212.webp',
   E04b:'assets/evidence/phone-video-blackout-2231.webp',
   E04c:'assets/evidence/phone-video-restored-2246.webp',
+  E04d:'assets/evidence/e04d-group-photo-2250.webp',
+  E05:'assets/evidence/e05-smartwatch-last-activity-2241.webp',
   E06:'assets/evidence/kitchen-timer-0036.webp',
-  E04d:'assets/evidence/group-2250.webp',
-  E03:'assets/evidence/nvr-wallclock-223413.webp',
-  E05:'assets/evidence/smartwatch-last-activity-2241.webp'
+  E07:'assets/evidence/e07-ohserin-interview-recording.webp',
+  E08:'assets/evidence/e08-study-access-log.webp',
+  E12:'assets/evidence/e12-vehicle-dashcam-2227.webp'
 };
 const ROOM_ACTIONS={
  living:[['E04a','단체사진 다시 확인','처음 알아낸 시간 차이의 기준'],['E04b','김옥독의 긴 휴대폰 영상','정전 중 휴대전화의 실제 촬영 시각'],['E04d','다뮤_가 보낸 22:50 사진','복구 후에도 보이지 않는 사람']],
