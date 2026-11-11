@@ -18,9 +18,9 @@ const ROOMS=[
 {id:'corridor',name:'서재 앞 복도',bg:'corridor.webp',sub:'경찰에게 전달할 현장 사진을 확인한다'},
 {id:'terrace',name:'테라스·외부 통로',bg:'terrace.webp',sub:'붉은 불빛이 지나간 길'},
 {id:'parking',name:'주차장',bg:'villa-exterior.webp',sub:'차량 기록과 장도윤의 증언'},
-{id:'management',name:'관리실',bg:'corridor.webp',sub:'장비별로 다른 시간 유지 방식'},
-{id:'basement',name:'지하 보일러실',bg:'corridor.webp',sub:'외부문과 이어지는 젖은 흔적'},
-{id:'storage',name:'창고·자료 보관실',bg:'corridor.webp',sub:'별장 매매와 과거 공사 자료'}
+{id:'management',name:'관리실',bg:'management.webp',sub:'장비별로 다른 시간 유지 방식'},
+{id:'basement',name:'지하 보일러실',bg:'boiler-room.webp',sub:'외부문과 이어지는 젖은 흔적'},
+{id:'storage',name:'창고·자료 보관실',bg:'storage-room.webp',sub:'별장 매매와 과거 공사 자료'}
 ];
 const E={
 'E04b':{name:'22:31 정전 중 휴대폰 영상',where:'챕터 3',text:'김옥독의 휴대폰은 정전 중에도 실제 시간을 기록했다. CCTV와 달리 전원 영향을 받지 않는다.'},
