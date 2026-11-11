@@ -45,6 +45,18 @@ const E={
 'C09':{name:'안전화 특이 마모 비교 사진',where:'지하 보일러실',text:'서재 사진 속 V자 뒤꿈치 마모와 보일러실 은닉 신발의 밑창 자국이 같은 위치·형태를 보인다. 신발 주인은 별도 확인이 필요하다.'},
 'C10':{name:'과거 공사 일지의 등록번호',where:'창고',text:'오래된 공사 일지에는 당시 검사 담당자의 기술자 등록번호가 기록됐다. 기사와 함께 문서의 출처를 확인할 수 있다.'}
 };
+const EVIDENCE_IMAGES = {
+  E04b:'assets/evidence/phone-video-blackout-2231.webp',
+  E06:'assets/evidence/kitchen-timer-0036.webp',
+  E07:'assets/evidence/e07-ohserin-interview-recording.webp',
+  E08:'assets/evidence/e08-study-access-log.webp',
+  E11:'assets/evidence/e11-terrace-footprints.webp',
+  E12:'assets/evidence/e12-vehicle-dashcam-2227.webp',
+  E13:'assets/evidence/e13-breaker-log.webp',
+  E14:'assets/evidence/e14-hidden-equipment.webp',
+  E15:'assets/evidence/e15-burned-document.webp',
+  C02:'assets/evidence/c02-headlamp-demo.webp'
+};
 const ACTIONS={
 living:[['E09','야뿌의 바비큐 사진','봉투의 수령자를 재확인'],['E10','이유나의 사고보고서 사본','기자에게 사진을 근거로 열람 요청'],['C01','다뮤_의 명함','당일 받은 기술자 명함'],['C02','헤드랜턴 시연 사진','적색 모드가 찍혀 있다'],['E07','오세린의 제공 녹음','면담이 실제로 있었다는 자료']],
 corridor:[['E08','서재 출입기록과 메모','테라스 약속 단서'],['E11','서재 현장 사진','문 안쪽의 젖은 발자국'],['E15','벽난로 현장 사진','타다 남은 문서의 번호']],
@@ -83,7 +95,7 @@ function warm(src){if(!src)return Promise.resolve();if(loadedImages.has(src))ret
 function say(lines,callback=null){afterDialogue=callback;modal={type:'dialogue',lines,index:0,loading:false};lines.forEach(l=>warm(portrait(l[0])));prepareLine();}
 async function prepareLine(){if(modal?.type!=='dialogue')return;const ticket=++sequence,src=portrait(modal.lines[modal.index][0]);modal.loading=!!src;render();await warm(src);if(sequence!==ticket||modal?.type!=='dialogue')return;modal.loading=false;render();}
 function next(){if(modal?.type!=='dialogue'||modal.loading)return;if(modal.index<modal.lines.length-1){modal.index++;prepareLine();return;}const cb=afterDialogue;afterDialogue=null;modal=null;render();if(cb)cb();}
-function detail(title,text,tag='자료'){modal={type:'detail',title,text,tag};render();}
+function detail(title,text,tag='자료',evidenceId=''){modal={type:'detail',title,text,tag,image:EVIDENCE_IMAGES[evidenceId]||null};render();}
 function alertUser(message){toast=message;render();}
 function log(text){state.log=[...(state.log||[]),text].slice(-35);}
 function begin(){const name=CH3?.name||CH2?.name||CH1?.name||'여행 친구';const prev=CH3?.stage==='complete'&&Array.isArray(CH3.evidence)?CH3.evidence.filter(id=>E[id]):[];state={version:1,name,stage:'investigate',room:'living',evidence:prev,solved:[],talked:[],classified:{},motiveDraft:{},log:['02:00 — 서로 다른 거짓말의 이유를 조사하기로 했다.'],asked:[],startedAt:Date.now(),finishedAt:null};save();say([
@@ -98,7 +110,7 @@ if(id==='E14'&&!(has('C08')&&has('E11')&&(solved('P08')||solved('P09')))){alertU
 if(id==='C09'&&!has('E14')){alertUser('은닉 장비의 사진을 먼저 확보하고 밑창을 비교해 보자.');return;}
 if(id==='E10'&&!(has('E09')&&state.talked.includes('이유나'))){alertUser('봉투 사진을 확인한 뒤 이유나에게 이야기하고 사본 열람을 요청하자.');return;}
 if(!has(id)){state.evidence.push(id);log(`새 자료 확보 · ${E[id].name}`);save();}
-detail(E[id].name,E[id].text,E[id].where);
+detail(E[id].name,E[id].text,E[id].where,id);
 }
 function talk(name){if(!state||state.stage!=='investigate')return;if(!state.talked.includes(name)){state.talked.push(name);save();}
 const t={
@@ -150,9 +162,9 @@ if(tab==='motives')return `<p class="small muted">각자의 거짓말이 어떤 
 return `<p class="small muted">질문은 사건 기록 일부에 정해진 규칙으로 답하는 오프라인 데모야. 실제 AI가 아니라서 다양한 말투를 모두 이해하지는 못해.</p><form id="q-form" class="qa-row"><input id="question-input" value="${esc(question)}" maxlength="140" autocomplete="off" placeholder="예: 정전은 수동으로 일어났나요?" aria-label="질문 입력"><button class="btn btn-primary" ${(state.asked||[]).length>=15?'disabled':''}>질문</button></form><p class="small muted">${(state.asked||[]).length}/15 질문</p><div class="history">${[...(state.asked||[])].reverse().map(x=>`<div class="qa-answer"><p>${esc(x.q)}</p><strong>${esc(x.answer)}</strong><p>${esc(x.reason)}</p></div>`).join('')}</div>`;}
 function finish(){return `${head()}<main class="finish-screen"><div class="finish-card"><div class="finish-art" role="img" aria-label="비 내린 산장 테라스"></div><div class="finish-copy"><span class="tag good">CHAPTER 04 COMPLETE</span><h1>서로 다른<br>거짓말의 이유</h1><p>발자국의 경로, 붉은 불빛, 수동 차단, 오래된 서류까지 조사했다. 모두의 거짓말에는 각자 다른 이유가 있었다. 어떤 것이 범행의 증거인지는 마지막 추리에서 직접 입증해야 한다.</p><div class="chip-row">${['P07','P08','P09','P10','P11'].map(id=>`<span class="chip good">${id} 검증</span>`).join('')}</div><div class="buttons"><a class="btn btn-primary" href="chapter5.html">CHAPTER 05 · 마지막 추리</a><button class="btn" data-act="revisit">다시 조사하기</button><a class="btn btn-subtle" href="index.html">메인으로</a></div></div></div></main>`;}
 function modalHtml(){if(!modal)return '';if(modal.type==='dialogue'){const row=modal.lines[modal.index],narr=row[0]==='내레이션',src=portrait(row[0]);return `<div class="modal-cover"><div class="modal ${narr?'narration':''}" role="dialog" aria-modal="true" aria-label="대화">${modal.loading?`<div class="dialogue-text"><p>장면을 준비 중이야…</p></div>`:`${narr?'':`<div class="dialogue-view">${src?`<img src="${esc(src)}" alt="">`:''}</div>`}<div class="dialogue-text">${narr?'':`<div class="speaker">${esc(row[0])}</div>`}<p>${esc(row[1])}</p></div><div class="dialogue-next"><span class="small muted">${modal.index+1} / ${modal.lines.length}</span><button class="btn btn-primary" data-act="next">${modal.index===modal.lines.length-1?'확인':'다음 ›'}</button></div>`}</div></div>`;}
-return `<div class="modal-cover"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(modal.title)}"><div class="modal-head"><h3>${esc(modal.title)}</h3><button class="btn btn-small btn-subtle" data-act="close">✕</button></div><div class="modal-body"><span class="tag">${esc(modal.tag)}</span><div class="line"></div><p>${esc(modal.text)}</p><div class="modal-buttons"><button class="btn btn-primary" data-act="close">확인</button></div></div></div></div>`;}
+return `<div class="modal-cover"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(modal.title)}"><div class="modal-head"><h3>${esc(modal.title)}</h3><button class="btn btn-small btn-subtle" data-act="close">✕</button></div><div class="modal-body"><span class="tag">${esc(modal.tag)}</span><div class="line"></div>${modal.image?`<img class="ch4-evidence-image" src="${esc(modal.image)}" alt="${esc(modal.title)} 증거 이미지" loading="eager" onerror="this.remove()">`:``}<p>${esc(modal.text)}</p><div class="modal-buttons"><button class="btn btn-primary" data-act="close">확인</button></div></div></div></div>`;}
 function render(){app.innerHTML=`<div class="ch3 ch4">${!state?welcome():state.stage==='complete'?finish():game()}${modalHtml()}${toast?`<div class="toast" role="status">${esc(toast)}</div>`:''}</div>`;}
-app.addEventListener('click',e=>{const btn=e.target.closest('[data-act]');if(!btn)return;const action=btn.dataset.act,id=btn.dataset.id||'';toast='';switch(action){case 'begin':begin();break;case 'room':if(state&&ROOMS.some(r=>r.id===id)){state.room=id;note='';save();render();}break;case 'collect':collect(id);break;case 'read':if(has(id))detail(E[id].name,E[id].text,E[id].where);break;case 'talk':talk(id);break;case 'tab':if(['records','people','board','motives','ask'].includes(id)){tab=id;note='';render();}break;case 'pick':selectEvidence(id);break;case 'solve':attempt(id);break;case 'hint':hintLevels[id]=Math.min(3,(hintLevels[id]||0)+1);render();break;case 'check-motives':checkMotives();break;case 'conclude':conclude();break;case 'next':next();break;case 'close':modal=null;render();break;case 'revisit':if(state){state.stage='investigate';save();render();}break;default:break;}});
+app.addEventListener('click',e=>{const btn=e.target.closest('[data-act]');if(!btn)return;const action=btn.dataset.act,id=btn.dataset.id||'';toast='';switch(action){case 'begin':begin();break;case 'room':if(state&&ROOMS.some(r=>r.id===id)){state.room=id;note='';save();render();}break;case 'collect':collect(id);break;case 'read':if(has(id))detail(E[id].name,E[id].text,E[id].where,id);break;case 'talk':talk(id);break;case 'tab':if(['records','people','board','motives','ask'].includes(id)){tab=id;note='';render();}break;case 'pick':selectEvidence(id);break;case 'solve':attempt(id);break;case 'hint':hintLevels[id]=Math.min(3,(hintLevels[id]||0)+1);render();break;case 'check-motives':checkMotives();break;case 'conclude':conclude();break;case 'next':next();break;case 'close':modal=null;render();break;case 'revisit':if(state){state.stage='investigate';save();render();}break;default:break;}});
 app.addEventListener('change',e=>{if(e.target.dataset.answer){answers[e.target.dataset.answer]=e.target.value;note='';render();}if(e.target.dataset.motive)motiveChange(e.target.dataset.motive,e.target.value);});
 app.addEventListener('input',e=>{if(e.target.id==='question-input')question=e.target.value;});
 app.addEventListener('submit',e=>{if(e.target.id==='q-form'){e.preventDefault();ask(question);}});

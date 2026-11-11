@@ -20,3 +20,6 @@
 @media(max-width:1230px){.ch4 .story-shell{grid-template-columns:150px minmax(0,1fr) 290px}}
 @media(max-width:1040px){.ch4 .story-shell{grid-template-columns:1fr}}
 @media(max-width:680px){.ch4 .story-shell{padding:0 9px 25px}.ch4 .matrix-row{padding:10px}.ch4 .scene{min-height:185px}.ch4 .segment button{font-size:10px;padding:9px 1px}}
+/* Chapter 4 evidence detail, including narrow mobile screens */
+.ch4-evidence-image{display:block;width:100%;height:auto;max-height:55vh;object-fit:contain;border:1px solid rgba(255,255,255,.15);border-radius:12px;margin:4px 0 15px;background:#111827}
+@media(max-width:600px){.ch4-evidence-image{max-height:42vh;margin-bottom:10px}}
