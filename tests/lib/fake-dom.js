@@ -26,6 +26,8 @@ function boot(file, storage = {}, root = PROJECT_ROOT) {
     // data-action(챕터 1~3)과 data-act(챕터 4~5)를 모두 지원
     click: async (act, id = '') => { ev('click', { closest: () => ({ dataset: { act, action: act, id } }) }); await tick(); },
     change: async (dataset, value) => { ev('change', { dataset, value }); await tick(); },
+    // 챕터 2처럼 instanceof HTMLInputElement 를 확인하는 라디오/입력칸 선택
+    changeInput: async (dataset, value) => { ev('change', Object.assign(Object.create(ctx.HTMLInputElement.prototype), { dataset, value, checked: true })); await tick(); },
     html: () => html,
     save: k => JSON.parse(storage[k] || 'null'),
     // 대화를 끝까지 넘기며 [화자, 초상화 경로] 목록을 반환

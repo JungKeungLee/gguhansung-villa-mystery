@@ -60,3 +60,73 @@
 .friend-room{display:block;font-size:10px;color:#a9b8cc;margin-top:3px}
 @media(max-width:700px){.scene-people{bottom:69px;gap:5px}.scene-person{width:62px;min-height:65px;padding:4px 3px}.scene-person img{width:32px;height:32px}.scene-person span{font-size:10px}.scene-person-more{font-size:10px;padding:5px 6px}}
 @media(max-width:420px){.dialogue-narration .dialogue-body{padding:23px 19px}.scene-people{bottom:67px}}
+
+/* 초보자 안내: 현재 목표 띠 + 게임 방법 안내창 */
+.goal-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;border-color:rgba(240,196,123,.35)}
+.goal-bar .goal-text{min-width:0}
+.goal-bar .eyebrow{font-size:10px;letter-spacing:.14em}
+.goal-bar p{margin-top:4px;font-size:13px;line-height:1.6;color:#e7e2d8}
+.goal-bar .goal-help{flex:none}
+.optional-tag{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;letter-spacing:0;color:#a9b8cc;border:1px solid #3a455d;border-radius:99px;padding:2px 8px;vertical-align:middle}
+.guide-modal{max-height:calc(100dvh - 36px);overflow-y:auto;display:flex;flex-direction:column}
+.guide-modal .detail-head{align-items:flex-start}
+.guide-modal .detail-head h2{margin-top:6px;font-size:21px;color:#f3dcb3}
+.guide-body{font-size:14px;line-height:1.85}
+.guide-body p+p,.guide-body p+ul,.guide-body ul+p{margin-top:10px}
+.guide-list{margin:0;padding-left:1.15em;display:grid;gap:9px}
+.guide-flow{padding:10px 12px;border-radius:12px;background:#253049;border:1px solid #3e4d6a;color:#f0d2a0;font-weight:700;font-size:13px;line-height:1.7}
+.guide-note{font-size:12px;color:#a9b8cc}
+.guide-dots{display:flex;justify-content:center;gap:8px;margin-top:20px}
+.guide-dot{width:10px;height:10px;padding:0;border-radius:50%;border:0;background:#46536d;cursor:pointer}
+.guide-dot.active{background:var(--gold);width:24px;border-radius:99px}
+.guide-footer{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.guide-nav{display:flex;gap:8px}
+@media(max-width:520px){
+  .goal-bar{flex-direction:column;align-items:stretch;gap:10px;padding:12px 13px}
+  .goal-bar .goal-help{width:100%;justify-content:center}
+  .modal-backdrop:has(.guide-modal){align-items:flex-end;padding:10px}
+  .guide-modal{padding:20px 18px;border-radius:18px}
+  .guide-modal .detail-head h2{font-size:19px}
+  .guide-body{font-size:14px;line-height:1.8}
+}
+
+/* ── 챕터 1 장면 핫스팟·인물 카드 보정 ─────────────────────────────── */
+/* 누르는 동안 전역 규칙 button:not(:disabled):active{transform:scale(.97)}이 중앙 정렬 translate를 덮어써
+   핫스팟이 오른쪽 아래로 미끄러지고(손을 떼는 지점이 버튼 밖이 되어) 클릭이 무시되던 문제 */
+.scene-frame .hotspot:not(:disabled):active{transform:translate(-50%,-50%) scale(.97)}
+/* 핫스팟 좌표(%)를 '사진이 실제로 그려지는 16:9 상자' 기준으로 배치한다.
+   프레임 비율이 16:9가 아니어도(모바일 5:4 등) 사진 전체를 보여 주고(contain) 핫스팟이 물체 위에 놓인다. */
+.scene-frame{container-type:size}
+.scene-stage{position:absolute;left:50%;top:50%;width:min(100cqw,calc(100cqh * 16 / 9));height:min(100cqh,calc(100cqw * 9 / 16));transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+.scene-stage .hotspot{pointer-events:auto}
+.scene-frame .scene-art.scene-photo{object-fit:contain}
+/* 장면 속 인물 카드가 핫스팟을 가리던 문제: 카드를 장면 바로 아래 한 줄로 옮긴다 */
+.scene-people{position:static;transform:none;left:auto;bottom:auto;max-width:none;justify-content:flex-start;align-items:center;gap:8px;overflow-x:auto;padding:2px 2px 4px;pointer-events:auto;scrollbar-width:thin}
+.scene-people-label{flex:none;font-size:11px;font-weight:800;color:#a9b8cc;margin-right:2px}
+.scene-person{flex:none;flex-direction:row;width:auto;min-height:0;padding:5px 13px 5px 5px;border-radius:99px;gap:8px}
+.scene-person img{width:34px;height:34px}
+.scene-person span{font-size:12px}
+.scene-person-more{flex:none;border-radius:99px}
+@media(max-width:700px){.scene-people{gap:6px}.scene-person{width:auto;min-height:0;padding:4px 11px 4px 4px}.scene-person img{width:30px;height:30px}.scene-person span{font-size:11px}}
+
+/* ── 챕터 1 대화창 NPC 초상화 ───────────────────────────────────────── */
+/* guests(최도식·박태성·오세린): 배경이 있는 512x447 상반신 그림 → 대화창 안에 카드로 전체 표시 */
+.dialogue-illustration .char-portrait[src*="/guests/"]{top:50%;bottom:auto;transform:translate(-50%,-50%);height:calc(100% - 40px);width:auto;max-width:calc(100% - 40px);aspect-ratio:512/447;object-fit:cover;border-radius:14px;border:1px solid #e4d3ae55}
+/* 윤해준·이유나·장도윤 night/surprised: 캔버스 위쪽 약 13~45%에만 상반신이 있는 원본 → 챕터 2~5와 같은 방식으로 확대·바닥 정렬 */
+.dialogue-illustration .char-portrait:is([src$="/lee-yuna/night.webp"],[src$="/lee-yuna/surprised.webp"],[src$="/jang-doyun/night.webp"],[src$="/jang-doyun/surprised.webp"],[src$="/yoon-haejun/night.webp"],[src$="/yoon-haejun/surprised.webp"]){bottom:0;height:290%;width:auto;max-width:none}
+.dialogue-illustration .char-portrait[src$="/lee-yuna/night.webp"]{transform:translate(-50%,55.8%)}
+.dialogue-illustration .char-portrait[src$="/lee-yuna/surprised.webp"]{transform:translate(-50%,55.7%)}
+.dialogue-illustration .char-portrait[src$="/jang-doyun/night.webp"]{transform:translate(-50%,57%)}
+.dialogue-illustration .char-portrait[src$="/jang-doyun/surprised.webp"]{transform:translate(-50%,56.5%)}
+.dialogue-illustration .char-portrait[src$="/yoon-haejun/night.webp"]{transform:translate(-50%,55.8%)}
+.dialogue-illustration .char-portrait[src$="/yoon-haejun/surprised.webp"]{transform:translate(-50%,55.7%)}
+
+/* ── 챕터 1 '그림에 없는 조사 대상'(벽시계·주차장·주차된 차량) 표시 ─────────────── */
+/* 점선 테두리 + 돋보기 아이콘 + 짧은 설명. 아이콘·글자는 모두 버튼 안에 있어 보이는 영역 = 클릭 영역 */
+.hotspot.hotspot-offscene{border-style:dashed;border-color:#9ccbf0;background:#0e1a2ef0;padding-top:7px;padding-bottom:7px}
+.hotspot-offscene .hotspot-pin{background:#9ccbf0}
+.hotspot-offscene .hotspot-icon{width:11px;height:11px;stroke-width:2.6}
+.hotspot-offscene .hotspot-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25}
+.hotspot-note{font-size:9.5px;font-weight:700;color:#bcd6ee;letter-spacing:0}
+.hotspot.hotspot-offscene:hover{background:#25405e}
+@media(max-width:520px){.hotspot.hotspot-offscene{padding-top:5px;padding-bottom:5px}.hotspot-note{font-size:9px}}

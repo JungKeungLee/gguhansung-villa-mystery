@@ -95,6 +95,14 @@ async function launch({ width = 1365, height = 900, mobile = false } = {}) {
     async set(sel, v) { await page.ev(`__qa.set(${JSON.stringify(sel)},${JSON.stringify(v)})`); await sleep(80); },
     async clickLink(href) { await page.ev(`(()=>{const a=[...document.querySelectorAll('a')].find(a=>a.getAttribute('href')===${JSON.stringify(href)});if(!a)throw new Error('링크 없음: ${href}');a.click();return 1})()`); await sleep(300); await page.waitFor(`location.pathname.endsWith(${JSON.stringify('/' + href)})&&document.readyState==="complete"`); await sleep(250); },
     text: () => page.ev('document.body.innerText'),
+    // 실제 마우스(터치 에뮬레이션 시 탭) 입력으로 요소 중앙을 클릭 — 다른 요소에 가려지면 그 요소가 클릭된다
+    async realClick(selector) {
+      const c = await page.ev(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)return null;e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}})()`);
+      if (!c) throw new Error('요소 없음: ' + selector);
+      for (const type of ['mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', { type, x: c.x, y: c.y, button: 'left', clickCount: 1 });
+      await sleep(200);
+    },
+    async key(key) { for (const type of ['keyDown', 'keyUp']) await send('Input.dispatchKeyEvent', { type, key, code: key, windowsVirtualKeyCode: key === 'Escape' ? 27 : key === 'Enter' ? 13 : 0 }); await sleep(150); },
     // 대화를 끝까지 넘기며 줄마다 화자·초상화 로드 상태를 기록
     async drain(max = 80) {
       const lines = [];
@@ -110,7 +118,8 @@ async function launch({ width = 1365, height = 900, mobile = false } = {}) {
       }
       throw new Error('대화가 끝나지 않음');
     },
-    async shot(file) { const r = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, Buffer.from(r.result.data, 'base64')); },
+    cdp: (method, params) => send(method, params), // 저수준 CDP 호출(마우스 누름 유지 등 재현용)
+    async shot(file, clip) { const r = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, ...(clip ? { clip: { ...clip, scale: 1 } } : {}) }); fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, Buffer.from(r.result.data, 'base64')); },
     noHScroll: () => page.ev('document.documentElement.scrollWidth<=window.innerWidth+1'),
     // 지연 로딩 이미지까지 불러온 뒤 깨진 <img> 목록 반환
     async brokenImages() {

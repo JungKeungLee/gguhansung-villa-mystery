@@ -24,6 +24,8 @@ results.push(['JS 문법 검사', bad.length ? 'FAIL' : 'PASS']);
 // 2) 로직 테스트(브라우저 불필요)
 run('로직 회귀(1차 수정)', ['tests/logic-regression.test.js']);
 run('이미지 매핑·경로(2차 작업)', ['tests/logic-assets.test.js']);
+run('초보자 안내 로직(챕터 1·2)', ['tests/logic-guide.test.js']);
+run('챕터 2 추리 보드 검증 결과 로직', ['tests/logic-ch2-board.test.js']);
 
 // 3) 브라우저 테스트(Chrome/Edge 필요)
 if (noBrowser) results.push(['브라우저 테스트', 'SKIP(--no-browser)']);
@@ -32,6 +34,9 @@ else {
   try { require('./lib/browser').findChrome(); } catch (e) { chromeOk = false; console.log('\n▶ 브라우저 테스트 건너뜀: ' + e.message); results.push(['브라우저 테스트', 'SKIP(브라우저 없음)']); }
   if (chromeOk) {
     run('초상화 렌더링(PC·모바일)', ['tests/browser-portraits.test.js']);
+    run('초보자 안내 화면(PC·모바일)', ['tests/browser-guide.test.js']);
+    run('챕터 1 장면·대화창(PC·태블릿·모바일)', ['tests/browser-ch1-scene.test.js']);
+    run('챕터 2 추리 보드 실제 클릭(PC·태블릿·모바일)', ['tests/browser-ch2-board.test.js']);
     run('챕터 1~5 전체 플레이(PC·모바일)', ['tests/browser-playthrough.test.js']);
   }
 }

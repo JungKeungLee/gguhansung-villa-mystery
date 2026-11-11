@@ -55,6 +55,17 @@ const VIEWPORTS = [{ name: 'PC', tag: 'pc', width: 1365, height: 900 }, { name: 
       await page.ev(`(()=>{const i=document.getElementById('nickname');i.value='QA탐정';i.dispatchEvent(new Event('input',{bubbles:true}));return 1})()`);
       await page.click('start'); await drain();
       T.ok((await save('ch1'))?.name === 'QA탐정', `${V} CH1: 닉네임으로 시작·자동 저장`);
+      // 초보자 안내: 처음 시작 시 자동 표시 → Esc로 닫기 → 「게임 방법」으로 다시 열기 → 끝까지 넘겨 닫기
+      T.ok(await page.ev(`!!document.querySelector('.guide-modal')`) && await has('여행을 시작해요'), `${V} CH1: 첫 플레이 안내 자동 표시`);
+      await page.ev(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));1`); await new Promise(r => setTimeout(r, 150));
+      T.ok(!(await page.ev(`!!document.querySelector('.guide-modal')`)), `${V} CH1: Esc로 안내 닫기`);
+      T.ok(await has('현재 목표') && await has('「저녁 시간으로」'), `${V} CH1: 현재 목표 표시`);
+      await page.click('guide'); T.ok(await has('여행을 시작해요'), `${V} CH1: 「게임 방법」으로 다시 열기`);
+      for (let i = 1; i < 5; i++) await page.click('guide-step', String(i));
+      T.ok(await has('시간 보내기') && await has('5 / 5'), `${V} CH1: 안내 5단계까지 넘기기`);
+      await shot('ch1-guide-last');
+      await page.click('close');
+      T.ok(!(await page.ev(`!!document.querySelector('.guide-modal')`)), `${V} CH1: 「시작하기」로 안내 닫기`);
       await page.click('loc', 'living'); await page.click('interact', 'photo'); await drain();
       T.ok((await save('ch1')).clues.includes('photo'), `${V} CH1: 단서(사진) 기록`);
       await page.click('talk'); T.ok(await has('누구와 대화할까?'), `${V} CH1: 대화 상대 선택창 열림`);
@@ -67,6 +78,7 @@ const VIEWPORTS = [{ name: 'PC', tag: 'pc', width: 1365, height: 900 }, { name: 
       T.ok(await page.ev(`!!__qa.el('resume')`), `${V} CH1: 새로고침 후 '이어하기' 표시`);
       await page.click('resume');
       T.ok(await has('모두가 모이는 저녁'), `${V} CH1: 새로고침 후 저녁 단계 복원`);
+      T.ok(!(await page.ev(`!!document.querySelector('.guide-modal')`)) && await has('시간대 2 / 4'), `${V} CH1: 새로고침 후 안내 재표시 없음·목표 갱신`);
       for (let i = 0; i < 3; i++) { await page.click('advance'); await drain(); }
       T.ok(await has('CHAPTER 01 · COMPLETE') && (await save('ch1')).phase === 'complete', `${V} CH1: 챕터 1 완료`);
       await page.click('home'); T.ok(await has('기록 확인'), `${V} CH1: 완료 후 타이틀 버튼(1차 수정)`);
@@ -83,6 +95,12 @@ const VIEWPORTS = [{ name: 'PC', tag: 'pc', width: 1365, height: 900 }, { name: 
       await page.click('report'); T.ok(await has('신고 방법'), `${V} CH2: 신고 선택창`);
       await page.click('report-choice', 'self'); const l2 = await drain();
       T.ok(['lee-yuna/normal', 'jang-doyun/normal', 'yoon-haejun/normal'].every(p => l2.some(l => l.src && l.src.includes(p) && l.loaded)), `${V} CH2: 외부인 3명 초상화(2차 수정)`);
+      // 초보자 안내: 조사 시작 시 자동 표시 → 끝까지 읽고 「조사 시작」
+      T.ok(await page.ev(`!!document.querySelector('.guide-modal')`) && await has('사건 조사를 시작해요') && await has('2개 이상'), `${V} CH2: 조사 시작 시 안내 자동 표시(2개 이상 조건)`);
+      for (let i = 1; i < 5; i++) await page.click('guide-step', String(i));
+      await shot('ch2-guide-last');
+      await page.click('close');
+      T.ok(!(await page.ev(`!!document.querySelector('.guide-modal')`)) && await has('현재 0 / 3'), `${V} CH2: 안내 닫은 뒤 현재 목표 0/3`);
       await collect('E04a'); await collect('E09');
       await page.click('tab', 'people'); await page.click('talk', '이유나'); await drain();
       await page.reload();
@@ -92,6 +110,8 @@ const VIEWPORTS = [{ name: 'PC', tag: 'pc', width: 1365, height: 900 }, { name: 
       await collect('E02'); await collect('E01');
       await page.click('room', 'study'); await collect('E08'); await collect('E11');
       await page.click('tab', 'board');
+      T.ok(await page.ev(`[...document.querySelectorAll('.board-need')].map(e=>e.textContent).join('|')==='근거 자료 2 / 2 확보 · 자료 버튼에서 선택해 검증해 봐|근거 자료 3 / 3 확보 · 자료 버튼에서 선택해 검증해 봐|근거 자료 2 / 2 확보 · 자료 버튼에서 선택해 검증해 봐'`), `${V} CH2: 문제 카드 3개에 자료 확보 현황(모두 확보) 표시`);
+      await shot('ch2-board-hints');
       await page.set('input[data-puzzle="P03"][value="yuna"]'); await page.click('solve', 'P03');
       T.ok(await has('연결 보드에서 직접 선택'), `${V} CH2: 증거 미선택 정답 → 거부`);
       await page.click('select-proof', 'ST-YUNA'); await page.click('select-proof', 'E09');
