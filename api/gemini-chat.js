@@ -1,4 +1,14 @@
 // 꾸한성: 안개 속 별장 — Gemini Chapter 2 question helper (no solution spoilers)
+const UNRELATED_MESSAGE='이 사건과 관련 없는 질문입니다.';
+function isCaseQuestion(q){
+ const text=String(q||'').replace(/\s+/g,'').toLowerCase();
+ // Common unrelated topics. This has priority over incidental words like '시간' or '사건'.
+ if(/대통령|국회의원|총선|대선|정당|정치|외교|전쟁|주식|코인|비트코인|환율|부동산|경제|사회문제|뉴스|날씨|기온|맛집|음식추천|요리법|레시피|축구|야구|농구|연예인|아이돌|영화추천|노래추천|숙제|수학|영어번역|프로그래밍|자바스크립트|파이썬|코딩|철학|종교|세계사/.test(text))return false;
+ // Named people, case places, clues, timelines and investigation language.
+ if(/꾸한성|꾸티뉴|난워니|김옥독|야뿌|하루노츠키|만조|모야|윤타미|야무지|다뮤|강석훈|박태성|최도식|오세린|윤해준|이유나|장도윤|별장|서재|거실|테라스|관리실|사건|수사|조사|추리|증거|단서|심문|진술|목격|알리바이|범인|살인|침입|잠입|정전|분전반|전기|카메라|cctv|nvr|녹화|시계|봉투|사진|바비큐|발자국|흙|젖은|출입|마스터키|문이잠|시신|쓰러|사망|현장|경찰|범행|용의자|누가죽|의심|거짓말|22:12|22:05|20:41|23:34|22:24|22:44|7분/.test(text))return true;
+ // Short follow-up questions within the game's detective notebook.
+ return /^(원인|이유|왜|어째서|어떻게|언제|누가|누구|무슨일|무슨일이|뭐가문제|어떤문제|가능성|확실해|정말이야|그게맞아)/.test(text);
+}
 const traffic = new Map();
 const WINDOW = 60 * 60 * 1000;
 const MAX_PER_HOUR = 20;
@@ -34,6 +44,7 @@ export default async function handler(req, res) {
   if (typeof q !== 'string' || q.trim().length < 2 || q.length > 140) {
     return reply(res, 400, {error:'질문은 2~140자로 입력해 주세요.'});
   }
+  if (!isCaseQuestion(q)) return reply(res, 200, {answer:UNRELATED_MESSAGE});
   if (/범인|진범|살인자|공범|범행동기|결말|스포일러|챕터\s*[345]|chapter\s*[345]|죽인\s*사람/i.test(q)) {
     return reply(res, 200, {answer:'현재 챕터에서 공개할 수 없는 정보야. 확보한 증거와 진술을 먼저 비교해 봐.'});
   }
