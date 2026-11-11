@@ -20,3 +20,7 @@
 @media(max-width:1260px){.ch3 .story-shell{grid-template-columns:155px minmax(0,1fr) 290px}.ch3 .segment button{font-size:10px}}
 @media(max-width:1040px){.ch3 .story-shell{grid-template-columns:1fr}.ch3 .rail{position:relative;top:auto}.ch3 .room-nav{display:flex}.ch3 .rail-bottom{display:flex;flex-wrap:wrap}.ch3 .rail-bottom .btn{width:auto}.ch3 .side .card{min-height:0}}
 @media(max-width:680px){.ch3 .top-right .tag{font-size:10px}.ch3 .scene{min-height:185px}.ch3 .info-grid{gap:6px}.ch3 .info-grid .info-cell{padding:10px}.ch3 .time-slot{grid-template-columns:1fr}.ch3 .side .card{padding:12px}.ch3 .segment button{font-size:10px;padding:9px 1px}.ch3 .dialogue-view{height:190px}.ch3 .context-text{line-height:1.4}.ch3 .plot-title{font-size:25px}}
+
+/* CH3: evidence photo inside the investigation modal */
+.ch3-evidence-image{display:block;width:100%;height:auto;max-height:55vh;object-fit:contain;margin:0 0 14px;border:1px solid #ffffff30;border-radius:12px;background:#101827}
+@media(max-width:600px){.ch3-evidence-image{max-height:42vh;margin-bottom:10px}}
