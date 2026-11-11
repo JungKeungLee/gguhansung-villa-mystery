@@ -98,6 +98,20 @@ async function rebutAll(g, vals = CH5.rebuttals) {
   const mid = boot('game.js', { [K.ch1]: g.storage[K.ch1] });
   await mid.click('resume'); ok(mid.html().includes('EXPLORATION / 장소'), '진행 중 세이브 이어하기');
 
+  T.section('CH1 단서 다시 보기 화면');
+  g = boot('game.js', {});
+  await g.click('start'); await g.drain();
+  await g.click('interact', 'guest-list'); await g.drain();          // 처음 확인
+  await g.click('interact', 'guest-list');                           // 다시 확인
+  const revisit = [];
+  for (let i = 0; i < 2; i++) { revisit.push(g.html()); await g.click('next'); }
+  ok(revisit[1].includes('강석훈·박태성·최도식') && revisit[1].includes('dialogue-narration'), '다시 보기 단서 설명 → 내레이션 창');
+  ok(revisit.every(h => !h.includes('speaker-emblem') && !h.includes('class="speaker-name"')), '다시 보기 화면에 플레이어 이름·원형 표시 없음');
+  await g.click('talk-member', '꾸티뉴');
+  let playerLine = '';
+  for (let i = 0; i < 3; i++) { if (g.html().includes('<div class="speaker-name">여행 친구</div>')) playerLine = g.html(); await g.click('next'); }
+  ok(playerLine.includes('speaker-emblem'), '플레이어 실제 대사(꾸티뉴 대화)는 기존 표시 유지');
+
   T.section('CH3 기록 탭 보기 이미지');
   const c3 = { version: 1, name: 't', stage: 'investigate', room: 'living', evidence: ['E08', 'E04a', 'ST-SERIN'], solved: [], confronted: [], talked: [], timeline: {}, timelineDone: false, notes: [], asked: [], log: [] };
   g = boot('chapter3.js', { [K.ch3]: JSON.stringify(c3) });
