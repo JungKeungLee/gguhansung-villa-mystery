@@ -419,13 +419,16 @@
     return '';
   }
   function render(){
-    const view=state && state.phase==='complete'?renderFinish():!state||currentView==='landing'?renderLanding():renderGame();
+    // 타이틀(landing) 요청이 완료 화면보다 우선한다. 완료 기록은 타이틀의 '기록 확인'으로 다시 열 수 있다.
+    const view=!state||currentView==='landing'?renderLanding():state.phase==='complete'?renderFinish():renderGame();
     app.innerHTML=view+renderOverlay()+(showToast&&!(!state||currentView==='landing')?`<div class="toast" role="status">${esc(showToast)}</div>`:'');
   }
   let currentView='landing';
   function handleAction(action,id){
     switch(action){
       case 'start':{
+        // 저장 기록이 있으면 덮어쓰기 전에 기존 초기화 확인창을 거친다(의도치 않은 기록 삭제 방지).
+        if(state){overlay={type:'confirm'};render();break;}
         const input=document.getElementById('nickname');introName=input?.value||introName; currentView='game';start(introName);break;
       }
       case 'resume':currentView='game';render();break;

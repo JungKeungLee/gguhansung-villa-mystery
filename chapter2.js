@@ -10,7 +10,7 @@ const ROOMS = [
   {id:'corridor',name:'1층 복도',sub:'서재로 이어지는 조용한 복도',bg:'corridor.webp',clock:'23:45'},
   {id:'study',name:'서재 문 앞',sub:'출입이 제한된 사건 현장',bg:'corridor.webp',clock:'23:49'},
   {id:'terrace',name:'테라스',sub:'비가 내리는 외부 통로',bg:'terrace.webp',clock:'00:05'},
-  {id:'management',name:'관리실',sub:'녹화기의 표시 시각',bg:'corridor.webp',clock:'00:15'},
+  {id:'management',name:'관리실',sub:'녹화기의 표시 시각',bg:'management.webp',clock:'00:15'},
   {id:'kitchen',name:'주방',sub:'뒤늦게 떠오르는 기억들',bg:'kitchen.webp',clock:'23:54'}
 ];
 const MEMBER_PATHS = {'꾸티뉴':'kkutinyu','난워니':'nanwoni','김옥독':'kimokdok','야뿌':'yappu','하루노츠키':'harunotsuki','만조':'manjo','모야':'moya','윤타미':'yuntami','야무지':'yamuji','다뮤_':'damyu'};
@@ -59,7 +59,9 @@ function log(t){state.log=[...(state.log||[]),t].slice(-40);}
 const has=(id)=>state?.evidence.includes(id);
 const solved=(id)=>state?.solved.includes(id);
 const GUEST_PORTRAITS={'박태성':'taesung','탁태성':'taesung','최도식':'dosik','오세린':'serin'};
-function portrait(name,variant='normal'){if(GUEST_PORTRAITS[name])return `assets/characters/guests/${GUEST_PORTRAITS[name]}.webp`;return MEMBER_PATHS[name]?`assets/characters/${MEMBER_PATHS[name]}/${variant}.webp`:null;}
+// 표정별 이미지(normal/night/surprised)가 있는 외부인. 대사의 표정 값(variant)을 그대로 따른다.
+const OUTSIDER_PATHS={'이유나':'lee-yuna','장도윤':'jang-doyun','윤해준':'yoon-haejun'};
+function portrait(name,variant='normal'){if(OUTSIDER_PATHS[name])return `assets/characters/${OUTSIDER_PATHS[name]}/${variant}.webp`;if(GUEST_PORTRAITS[name])return `assets/characters/guests/${GUEST_PORTRAITS[name]}.webp`;return MEMBER_PATHS[name]?`assets/characters/${MEMBER_PATHS[name]}/${variant}.webp`:null;}
 function warmPortrait(src){if(!src)return Promise.resolve();if(PHOTO_CACHE.has(src))return PHOTO_CACHE.get(src);const pic=new Image();pic.src=src;const p=(typeof pic.decode==='function'?pic.decode():new Promise((resolve,reject)=>{pic.onload=resolve;pic.onerror=reject;})).catch(()=>null);PHOTO_CACHE.set(src,p);return p;}
 async function prepareDialogue(){if(!modal||modal.type!=='dialogue')return;const id=++sequence;const item=modal.lines[modal.index];const src=portrait(item[0],item[2]||'normal');modal.loading=!!src;render();if(src)await warmPortrait(src);if(id!==sequence||modal?.type!=='dialogue')return;modal.loading=false;render();}
 function speak(lines,after=null){dialogueAfter=after;modal={type:'dialogue',lines,index:0,loading:false};for(const item of lines){const p=portrait(item[0],item[2]||'normal');if(p)warmPortrait(p);}prepareDialogue();}

@@ -117,7 +117,8 @@ function begin(){const name=CH3?.name||CH2?.name||CH1?.name||'여행 친구';con
 ['윤타미','전원 장치 쪽 기록은 CCTV하고 다른 시계로 남는대. 관리인에게 확인을 부탁하자.'],
 ['내레이션','물건은 그대로 보존하고, 촬영해 둔 기록과 허락받은 서류만 비교하기로 했다.']]);}
 function collect(id){if(!state||state.stage!=='investigate'||!E[id])return;
-if(id==='E13'&&!(has('C07')&&state.talked.includes('최도식'))){alertUser('관리실 휴게 흔적(C07)을 확인한 뒤 최도식에게 기록 열람을 부탁해 보자.');return;}
+// E13은 C07 확보 '이후' 최도식에게 요청했을 때만 열린다(logAccess). 이미 E13을 가진 저장 데이터는 그대로 다시 볼 수 있다.
+if(id==='E13'&&!has('E13')&&!(has('C07')&&state.logAccess)){alertUser('관리실 휴게 흔적(C07)을 확인한 뒤 최도식에게 기록 열람을 부탁해 보자.');return;}
 if(id==='E14'&&!(has('C08')&&has('E11')&&(solved('P08')||solved('P09')))){alertUser('서재 발자국과 지하 외부문의 황토 경로를 기록하고, 붉은 불빛 또는 정전 퍼즐을 검증해야 선반 뒤를 조사할 수 있어.');return;}
 if(id==='C09'&&!has('E14')){alertUser('은닉 장비의 사진을 먼저 확보하고 밑창을 비교해 보자.');return;}
 if(id==='E10'&&!(has('E09')&&state.talked.includes('이유나'))){alertUser('봉투 사진을 확인한 뒤 이유나에게 이야기하고 사본 열람을 요청하자.');return;}
@@ -125,6 +126,7 @@ if(!has(id)){state.evidence.push(id);log(`새 자료 확보 · ${E[id].name}`);s
 detail(E[id].name,E[id].text,E[id].where,id);
 }
 function talk(name){if(!state||state.stage!=='investigate')return;if(!state.talked.includes(name)){state.talked.push(name);save();}
+if(name==='최도식'&&has('C07')&&!state.logAccess){state.logAccess=true;save();}
 const t={
 '꾸티뉴':[['꾸티뉴','눈에 띄는 사람부터 의심하고 싶었는데, 거짓말의 이유는 다를 수 있겠네. 증거 없이는 누구도 단정하지 말자.']],
 '난워니':[['난워니','20:41 바비큐 사진도 다시 봤어? 뒤쪽에 봉투가 찍혔더라.']],
