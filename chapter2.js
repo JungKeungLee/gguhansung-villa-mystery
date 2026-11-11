@@ -111,35 +111,77 @@ function toggleProof(id){if(selection.has(id))selection.delete(id);else selectio
 function attempt(id){const p=PUZZLES.find(x=>x.id===id);if(!p||solved(id))return;const missing=p.required.filter(x=>!has(x));if(missing.length){boardNotice='아직 확인하지 않은 자료가 있어. 사람과 이야기하거나 관련 장소를 다시 조사해 봐.';render();return;}const missingSelected=p.required.filter(x=>!selection.has(x));if(missingSelected.length){boardNotice='증거를 읽는 것만으로 충분하지 않아. 이 추리를 뒷받침할 자료를 연결 보드에서 직접 선택해 줘.';render();return;}
 if(chosen[id]!==p.correct){boardNotice='해당 결론은 현재 증거들로 입증되지 않아. 사진·기록과 증언에서 실제로 일치하지 않는 부분을 다시 확인해 봐.';render();return;}
 state.solved.push(id);log(`추리 검증 — ${p.title}`);selection.clear();chosen={};boardNotice='';save();modal={type:'detail',title:`추리 완료 · ${p.title}`,body:p.success,tag:'검증 완료'};render();}
-function askOffline(q){q=(q||'').trim().slice(0,140);if(!q)return;if(!state||state.stage!=='investigate')return;if((state.asked?.length||0)>=15){showToast('이 챕터의 시험 질문 15회를 모두 사용했어.');return;}
-const lower=q.replace(/\s+/g,'').toLowerCase();let answer='알 수 없음',reason='아직 확보한 자료만으로는 확정할 수 없는 질문이야. 현장에서 증거를 더 찾아보자.';
-if(/범인|살인자|진범|공범|범행동기|누가죽|죽인사람/.test(lower)){answer='현재 공개 불가';reason='범인을 특정하는 질문은 최종 재구성과 증거 검증이 필요해.';}
-else if(/(cctv|녹화|카메라|시계).*(7분|느린|오차)|7분.*(cctv|시계|카메라)/i.test(lower)){answer=solved('P01')?'YES':'현재 공개 불가';reason=solved('P01')?'오후 정전 이후 영상 표시의 첫 오차는 증거로 검증했어. 밤에도 그대로인지는 아직 몰라.':'먼저 22:12 사진과 같은 장면의 NVR 화면을 비교해 봐.';}
-else if(/(이유나).*(봉투|만났|접촉)|봉투.*(이유나)/.test(lower)){answer=solved('P03')?'YES':'현재 공개 불가';reason=solved('P03')?'20:41에 강석훈과 이유나가 접촉한 사실을 사진과 진술로 확인했어.':'해당 인물의 진술과 여행 사진을 비교해 보자.';}
-else if(/(서재).*(테라스|다른문|밖|외부)|테라스.*(서재)/.test(lower)){answer=solved('P02')?'YES':'현재 공개 불가';reason=solved('P02')?'서재 정문 이외의 출입구가 존재해. 누가 이용했는지는 아직 확인하지 못했어.':'서재 정문 기록과 물기 흔적을 함께 확인해 봐.';}
-else if(/(정전).*(있었|발생)|전기.*(나갔|꺼졌)/.test(lower)){answer='YES';reason='오후와 밤에 정전이 있었다는 사실은 여러 사람이 목격했어. 밤 정전의 정확한 지속 시간과 원인은 아직 확정하지 못했어.';}
-else if(/(꾸한성).*(범인|살인)/.test(lower)){answer='현재 공개 불가';reason='누구도 근거 없이 단정할 수 없어. 증거와 진술을 확인해야 해.';}
-else if(/^(안녕|hi|hello)/i.test(lower)){answer='관련 없음';reason='사건의 사실 여부를 묻는 질문을 입력해 봐.';}
-state.asked=[...(state.asked||[]),{q,answer,reason}].slice(-15);queryText='';save();render();}
+function offlineResult(q) {
+ const lower=q.replace(/\s+/g,'').toLowerCase();
+ const knows=id=>has(id);
+ const confirmed=id=>solved(id);
+ let answer='수사 노트',reason='지금까지 확인된 자료만으로는 단정하기 어려워. 관련 장소의 기록과 인물 진술을 비교해 보면 새로운 단서가 나올 수 있어.';
+ if(/(누가|누구|외부인|낯선사람|침입자|잠입|침입).*(죽|살인|범행|범인)|죽(였|인|였나)|살인.*(잠입|침입)/.test(lower)) {
+   answer='가능성은 남아 있어';
+   reason=knows('E08')&&knows('E11')?'서재 정문 기록만으로 모든 접근을 설명할 수는 없어. 테라스 쪽 젖은 흔적도 확인됐지만 외부 침입이나 살인 여부, 흔적의 주인은 아직 입증되지 않았어.':'외부인이 들어왔다고 단정할 수 없어. 서재 출입 기록과 테라스 쪽 흔적을 함께 조사해야 판단할 수 있어.';
+ } else if(/범인|진범|살인자|공범|누가죽|죽인사람|범행동기|범행원인/.test(lower)) {
+   answer='아직 특정할 수 없어';
+   reason='지금 이 자리에 범인이 있는지조차 확인되지 않았어. 누군가를 지목하기보다 시간 기록과 서로 어긋나는 진술을 차례로 검증해야 해.';
+ } else if(/(cctv|녹화|녹화기|카메라|nvr|시계|시간).*(문제|이상|오류|오차|느린|늦|빠른|정확|맞|7분)|(?:7분|오차|시각).*(cctv|녹화|카메라|시계|nvr)/i.test(lower)) {
+   answer=confirmed('P01')?'시간 오차의 단서가 확인됐어':'시간 표시를 비교해 봐야 해';
+   reason=confirmed('P01')?'22:12에 공유된 사진과 같은 장면이 CCTV에는 22:05로 남아 있어. 오후 정전 뒤 표시 시각이 약 7분 느렸다는 가설을 검증했지만, 밤에도 같은 오차가 유지됐는지는 아직 몰라.':knows('E04a')&&knows('E02')?'단체 채팅 사진과 같은 장면의 CCTV 표시 시각이 달라. 오후 정전 기록과 비교하면 시계가 정확한지 판단할 실마리가 있어.':'거실 단체 채팅 사진의 시간과 관리실 CCTV 표시 시간을 비교해 봐. 오후 정전 영상도 중요한 단서일 수 있어.';
+ } else if(/(정전|전기|불).*(원인|이유|왜|문제|고장|꺼)|(?:원인|이유|왜).*(정전|전기|불)/.test(lower)) {
+   answer='정전 원인은 미확인';
+   reason='오후와 밤에 정전이 있었지만 원인은 확인되지 않았어. 관리실 기록과 전기 상태를 확인했다는 사람의 진술을 비교해 봐.';
+ } else if(/(원인|이유|왜|어떻게).*(뭔|무엇|뭐|인가|까요|지)|^(원인|이유|왜)(이|은|가)?/.test(lower)) {
+   answer='어떤 원인을 묻는지 확인이 필요해';
+   reason='정전 원인을 말하는 거라면 아직 확인되지 않았어. 강석훈이 쓰러진 이유를 말하는 거라면 경찰 조사 전에는 단정할 수 없어. 현재 확인된 시간대와 현장 기록부터 살펴봐.';
+ } else if(/(이유나|강석훈).*(봉투|만났|접촉|대화)|봉투.*(이유나|강석훈)/.test(lower)) {
+   answer=confirmed('P03')?'접촉 사실이 검증됐어':'진술과 사진을 비교해 봐';
+   reason=confirmed('P03')?'20:41 바비큐 사진에 강석훈이 이유나에게 봉투를 건네는 모습이 있어. 접촉을 부인한 첫 진술과 모순되지만, 봉투 내용이나 범행 연관성은 몰라.':knows('E09')&&knows('ST-YUNA')?'바비큐 사진과 이유나의 첫 진술을 나란히 읽어 봐. 두 기록 사이에 확인할 부분이 있어.':'바비큐 사진과 이유나의 진술이 도움이 될 수 있어.';
+ } else if(/(서재|출입|문).*(테라스|밖|외부|다른문|다른길|잠|잠김|기록)|(?:테라스|외부|문).*(서재|출입)/.test(lower)) {
+   answer=confirmed('P02')?'다른 출입 경로를 살펴볼 필요가 있어':'정문 기록만으로 판단할 수 없어';
+   reason=confirmed('P02')?'서재는 정문 외에도 테라스 쪽 경로를 조사해야 해. 하지만 그 길을 누가 이용했는지는 아직 확인하지 못했어.':knows('E08')&&knows('E11')?'정문 출입 기록과 테라스 쪽 젖은 흔적을 함께 보면 정문 기록만으로는 설명되지 않는 가능성이 있어.':'서재 정문 출입 기록과 테라스 쪽 현장 흔적을 확인해 봐.';
+ } else if(/(강석훈|대표).*(쓰러|상태|죽|발견)|(?:쓰러|발견).*(강석훈|대표)/.test(lower)) {
+   answer='서재에서 쓰러진 채 발견됐어';
+   reason='23:34에 관리인이 서재 문을 열었을 때 강석훈이 쓰러져 있었어. 왜 그런 상태였는지는 아직 단정할 수 없어.';
+ } else if(/(정전).*(있었|발생)|전기.*(나갔|꺼졌)/.test(lower)) {
+   answer='정전은 있었어';
+   reason='오후와 밤에 정전이 발생했다는 사실은 확인돼. 원인과 사건의 관련성은 아직 알 수 없어.';
+ } else if(/^(안녕|hi|hello)/i.test(lower)) {
+   answer='안녕, 탐정!';
+   reason='궁금한 사건 기록이나 인물의 진술을 질문해 줘.';
+ }
+ return {answer,reason};
+}
+function askOffline(q){
+ q=(q||'').trim().slice(0,140);
+ if(!q||!state||state.stage!=='investigate')return;
+ if((state.asked?.length||0)>=15){showToast('이 챕터의 시험 질문 15회를 모두 사용했어.');return;}
+ const result=offlineResult(q);
+ state.asked=[...(state.asked||[]),{q,...result}].slice(-15);
+ queryText='';save();render();
+}
 let aiBusy=false;
 async function ask(q){
  q=(q||'').trim().slice(0,140);
  if(!q||!state||state.stage!=='investigate'||aiBusy)return;
  if((state.asked?.length||0)>=15){showToast('이 챕터의 시험 질문 15회를 모두 사용했어.');return;}
- if(/범인|살인자|진범|공범|범행동기|누가죽|죽인사람|스포일러|챕터\s*[345]/i.test(q)){askOffline(q);return;}
+ // Chapter spoilers and common evidence questions are answered deterministically.
+ // This avoids unsupported AI claims and keeps results consistent with the game puzzles.
+ if(/범인|진범|살인|죽인|누가죽|공범|침입|잠입|cctv|nvr|녹화|시계|오차|7분|정전|전기|봉투|이유나|강석훈|서재|테라스|원인|챕터\s*[345]/i.test(q)){
+   askOffline(q);return;
+ }
  aiBusy=true;render();
  try{
   const controller=new AbortController(),tid=setTimeout(()=>controller.abort(),14500);
   let response;
   try{response=await fetch('/api/gemini-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q}),signal:controller.signal});}
   finally{clearTimeout(tid);}
-  if(!response.ok)throw Error('AI 사용 불가');
+  if(!response.ok)throw Error('AI request unavailable');
   const data=await response.json();
-  if(typeof data.answer!=='string'||!data.answer.trim())throw Error('AI 응답 없음');
+  if(typeof data.answer!=='string'||!data.answer.trim())throw Error('Empty AI response');
   state.asked=[...(state.asked||[]),{q,answer:'AI 조사 도우미',reason:data.answer.slice(0,900)}].slice(-15);
   queryText='';save();render();
- }catch{showToast('Gemini 사용 불가: 기존 규칙 답변으로 안내해.');askOffline(q);}
- finally{aiBusy=false;render();}
+ }catch{
+  // No intrusive warning: use the local evidence-aware answer instead.
+  askOffline(q);
+ }finally{aiBusy=false;render();}
 }
 function conclude(){if(!state||state.stage!=='investigate')return;if(state.solved.length<2){showToast('증거를 연결해 추리 2개 이상을 검증해야 해.');return;}state.stage='complete';state.finishedAt=Date.now();log('00:25경 — 검증된 사실들을 경찰에게 전달하기 위한 기록을 정리했다.');save();render();}
 function renderTop(){return `<header class="top"><a class="brand" href="index.html"><span class="brand-icon">✦</span><span>꾸한성 · 안개 속 별장</span></a><div class="top-right"><span class="tag">CHAPTER 02</span><span class="muted">사건 발생 · 로컬 자동 저장</span></div></header>`;}
