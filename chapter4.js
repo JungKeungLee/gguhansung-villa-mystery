@@ -50,7 +50,7 @@ const EVIDENCE_IMAGES = {
   C01:'assets/evidence/c01-yoon-haejun-business-card.webp',
   C04:'assets/evidence/c04-accident-news.webp',
   C09:'assets/evidence/c09-boot-heel-comparison.webp',
-  C10:'assets/evidence/c10-construction-log.webp'
+  C10:'assets/evidence/c10-construction-log.webp',
   E04b:'assets/evidence/phone-video-blackout-2231.webp',
   E06:'assets/evidence/kitchen-timer-0036.webp',
   E07:'assets/evidence/e07-ohserin-interview-recording.webp',
