@@ -46,6 +46,11 @@ const E={
 'C10':{name:'과거 공사 일지의 등록번호',where:'창고',text:'오래된 공사 일지에는 당시 검사 담당자의 기술자 등록번호가 기록됐다. 기사와 함께 문서의 출처를 확인할 수 있다.'}
 };
 const EVIDENCE_IMAGES = {
+  E10:'assets/evidence/e10-accident-report.webp',
+  C01:'assets/evidence/c01-yoon-haejun-business-card.webp',
+  C04:'assets/evidence/c04-accident-news.webp',
+  C09:'assets/evidence/c09-boot-heel-comparison.webp',
+  C10:'assets/evidence/c10-construction-log.webp'
   E04b:'assets/evidence/phone-video-blackout-2231.webp',
   E06:'assets/evidence/kitchen-timer-0036.webp',
   E07:'assets/evidence/e07-ohserin-interview-recording.webp',
