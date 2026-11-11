@@ -11,7 +11,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'
 const PERSON={'꾸티뉴':'kkutinyu','난워니':'nanwoni','김옥독':'kimokdok','야뿌':'yappu','하루노츠키':'harunotsuki','만조':'manjo','모야':'moya','윤타미':'yuntami','야무지':'yamuji','다뮤_':'damyu'};
 const ROOMS=[
  {id:'living',name:'거실',bg:'living.webp',sub:'사진을 남겼던 바로 그 자리'},
- {id:'management',name:'관리실',bg:'corridor.webp',sub:'녹화 장치와 두 개의 시각'},
+ {id:'management',name:'관리실',bg:'management.webp',sub:'녹화 장치와 두 개의 시각'},
  {id:'kitchen',name:'주방',bg:'kitchen.webp',sub:'복구 직후 남은 기록'},
  {id:'corridor',name:'복도',bg:'corridor.webp',sub:'서재 앞 경계선을 지키는 사람들'},
  {id:'terrace',name:'테라스',bg:'terrace.webp',sub:'비가 내리는 외부 통로'}
@@ -79,7 +79,9 @@ function save(){if(!state)return;try{localStorage.setItem(KEY,JSON.stringify(sta
 function showToast(message){toast=message;render();clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toast='';render();},3500);}
 function log(message){state.log=[...(state.log||[]),message].slice(-40);}
 const GUEST_PORTRAITS={'박태성':'taesung','탁태성':'taesung','최도식':'dosik','오세린':'serin'};
-function portrait(name,type='night'){if(GUEST_PORTRAITS[name])return `assets/characters/guests/${GUEST_PORTRAITS[name]}.webp`;return PERSON[name]?`assets/characters/${PERSON[name]}/${type}.webp`:null;}
+// 표정별 이미지(normal/night/surprised)가 있는 외부인. 이 챕터의 기본값(night)을 그대로 따른다.
+const OUTSIDER_PATHS={'이유나':'lee-yuna','장도윤':'jang-doyun','윤해준':'yoon-haejun'};
+function portrait(name,type='night'){if(OUTSIDER_PATHS[name])return `assets/characters/${OUTSIDER_PATHS[name]}/${type}.webp`;if(GUEST_PORTRAITS[name])return `assets/characters/guests/${GUEST_PORTRAITS[name]}.webp`;return PERSON[name]?`assets/characters/${PERSON[name]}/${type}.webp`:null;}
 const images=new Map();function warm(src){if(!src)return Promise.resolve();if(images.has(src))return images.get(src);const p=new Image();p.src=src;const ready=(p.decode?p.decode():new Promise((res,rej)=>{p.onload=res;p.onerror=rej;})).catch(()=>null);images.set(src,ready);return ready;}
 async function prepareDialogue(){if(modal?.kind!=='dialogue')return;const token=++sequence;const row=modal.lines[modal.index];const src=portrait(row[0],row[2]||'night');modal.loading=Boolean(src);render();if(src)await warm(src);if(token!==sequence||modal?.kind!=='dialogue')return;modal.loading=false;render();}
 function speak(lines,then=null){afterDialogue=then;modal={kind:'dialogue',lines,index:0,loading:false};for(const row of lines){const img=portrait(row[0],row[2]||'night');if(img)warm(img);}prepareDialogue();}
@@ -173,7 +175,7 @@ return `<div class="modal-cover"><div class="modal" role="dialog" aria-modal="tr
 function render(){app.innerHTML=`<div class="ch3">${!state?welcome():state.stage==='complete'?finish():game()}${renderModal()}${toast?`<div class="toast" role="status">${esc(toast)}</div>`:''}</div>`;}
 app.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const action=el.dataset.action,id=el.dataset.id||'';switch(action){
  case 'begin':begin();break;case 'room':if(ROOMS.some(r=>r.id===id)){state.room=id;notice='';save();render();}break;
- case 'collect':collect(id);break;case 'read':if(has(id)&&E[id])detail(E[id].name,E[id].text,E[id].where);break;
+ case 'collect':collect(id);break;case 'read':if(has(id)&&E[id])detail(E[id].name,E[id].text,E[id].where,id);break;
  case 'talk':talk(id);break;case 'confront':confront(id);break;case 'proof':selectProof(id);break;
  case 'tab':if(['records','people','board','timeline','ask'].includes(id)){tab=id;notice='';render();}break;
  case 'solve':attempt(id);break;case 'hint':setHint(id);break;case 'timeline-check':checkTimeline();break;

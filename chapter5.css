@@ -79,7 +79,12 @@
 .ch5 .ch5-suspect-board figcaption{font-size:12px;color:#aab9cc;line-height:1.5}
 .ch5 .ch5-suspect-board a:focus-visible{outline:3px solid #f5d18d;outline-offset:3px;border-radius:12px}
 
-/* Distinct visual moods for the three existing Chapter 5 endings. */
-.ch5 .ch5-finish.bad .finish-art{background-image:linear-gradient(rgba(10,14,29,.44),rgba(10,14,29,.44)),url('assets/backgrounds/villa-exterior.webp');filter:saturate(.6)}
-.ch5 .ch5-finish.normal .finish-art{background-image:url('assets/backgrounds/ch5-ending-villa-dawn.webp');filter:saturate(.82)}
-.ch5 .ch5-finish.true .finish-art{background-image:url('assets/backgrounds/ch5-true-ending-sunrise.webp');filter:none}
+/* Chapter 5 endings: dedicated 16:9 illustration per ending (1672x941).
+   The art spans the full card width above the text with the image's own aspect ratio,
+   so `cover` shows the whole composition and no character is cropped on PC or mobile. */
+.ch5 .ch5-finish{grid-template-columns:minmax(0,1fr);max-width:1100px;width:100%;margin:0 auto}
+.ch5 .ch5-finish .finish-art{min-height:0;aspect-ratio:1672/941;background-size:cover;background-position:center;background-repeat:no-repeat;filter:none}
+.ch5 .ch5-finish .finish-art:after{background:linear-gradient(180deg,transparent 90%,#1b253a 100%)}
+.ch5 .ch5-finish.bad .finish-art{background-image:url('assets/backgrounds/ch5-bad-ending.webp')}
+.ch5 .ch5-finish.normal .finish-art{background-image:url('assets/backgrounds/ch5-normal-ending.webp')}
+.ch5 .ch5-finish.true .finish-art{background-image:url('assets/backgrounds/ch5-true-ending.webp')}

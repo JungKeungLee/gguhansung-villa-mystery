@@ -5,3 +5,57 @@
 
 a.btn{color:#edeaf0}
 a.btn-primary{color:#22283b}
+
+/* 외부인 상반신(bust) 초상화 보정 — 챕터 2~5 대화창 공통(모든 챕터가 이 파일을 불러옴)
+   이유나·장도윤·윤해준의 night/surprised 원본은 800x1200 캔버스의 세로 약 13~45%에만 상반신이 있고
+   아래 약 55%는 투명 여백이라, 기존 contain 방식에서는 인물이 대화창의 약 1/3 크기로 작게 보였다.
+   원본 WebP는 그대로 두고 대화창에서만 6장 모두 같은 배율(캔버스 높이 290%)로 키운 뒤,
+   파일별 상반신 아래 끝(측정값)을 대화창 바닥에 맞춘다. 위쪽 머리 여백은 8~12% 남는다.
+   선택자가 6개 파일 경로에만 걸리므로 멤버 초상화와 외부인 normal(전신) 이미지에는 영향이 없다.
+   측정 도구: node tests/tools/portrait-bounds.js */
+.modal .dialogue-view img:is([src$="/lee-yuna/night.webp"],[src$="/lee-yuna/surprised.webp"],[src$="/jang-doyun/night.webp"],[src$="/jang-doyun/surprised.webp"],[src$="/yoon-haejun/night.webp"],[src$="/yoon-haejun/surprised.webp"]){position:absolute;left:50%;bottom:0;height:290%;width:auto;max-width:none;object-fit:contain}
+.modal .dialogue-view img[src$="/lee-yuna/night.webp"]{transform:translate(-50%,55.8%)}
+.modal .dialogue-view img[src$="/lee-yuna/surprised.webp"]{transform:translate(-50%,55.7%)}
+.modal .dialogue-view img[src$="/jang-doyun/night.webp"]{transform:translate(-50%,57%)}
+.modal .dialogue-view img[src$="/jang-doyun/surprised.webp"]{transform:translate(-50%,56.5%)}
+.modal .dialogue-view img[src$="/yoon-haejun/night.webp"]{transform:translate(-50%,55.8%)}
+.modal .dialogue-view img[src$="/yoon-haejun/surprised.webp"]{transform:translate(-50%,55.7%)}
+
+/* 챕터 2 초보자 안내: 현재 목표 띠, 게임 방법 안내창, 추리 보드 사용법·자료 확보 현황 */
+.goal-strip{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-color:#806846}
+.goal-strip strong{display:block;margin-top:5px;font-size:14px;color:#f6e3bf}
+.goal-strip p{margin-top:4px;font-size:12px;line-height:1.6;color:#c1ccdc}
+.goal-strip .btn{flex:none}
+.goal-strip.done{border-color:#4f8f74}
+.goal-strip.done strong{color:var(--green)}
+.guide-modal .modal-head{align-items:flex-start}
+.guide-modal .modal-head h3{margin-top:6px;font-size:19px}
+.guide-body{font-size:14px;line-height:1.85}
+.guide-body p+p,.guide-body p+ol,.guide-body ol+p,.guide-body ul+p{margin-top:10px}
+.guide-body strong{color:#f2d49c}
+.guide-list{margin:0;padding-left:1.2em;display:grid;gap:9px}
+.guide-note{font-size:12px;color:var(--muted)}
+.guide-dots{display:flex;justify-content:center;gap:8px;margin-top:20px}
+.guide-dot{width:10px;height:10px;padding:0;border-radius:50%;border:0;background:#46536d;cursor:pointer}
+.guide-dot.active{background:var(--gold);width:24px;border-radius:99px}
+.guide-footer{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.guide-nav{display:flex;gap:8px}
+.board-howto{margin:0 0 4px;padding:10px 12px 10px 30px;border:1px solid #485875;border-radius:11px;background:#18243a;font-size:12px;line-height:1.7;color:#c8d2e1}
+.board-howto strong{color:#f2d49c}
+.board-card p.board-need{font-size:12px;font-weight:700;color:#f2c99a}
+.board-card p.board-need.ready{color:var(--green)}
+/* 문제별 검증 결과: 해당 카드의 검증 버튼 바로 아래에 표시(애니메이션 없음) */
+.board-selected{margin-top:10px;font-size:12px;line-height:1.6;color:#d7dfeb}
+.board-card .board-result{margin-top:2px;padding:10px 12px;border-left-width:4px;color:#e6ebf3;scroll-margin:24px}
+.board-card .board-result.missing{border-color:#b8925a;background:#2a2418}
+.board-card .board-result.select{border-color:#6f9fd1;background:#16263d}
+.board-card .board-result.wrong{border-color:#c7766f;background:#2c1d22}
+.board-card .board-result.success{border-color:#4f8f74;background:#15291f;color:var(--green);font-weight:700}
+.board-card.solved{border-color:#4f8f74}
+@media(max-width:680px){
+  .goal-strip{flex-direction:column;align-items:stretch;gap:10px;padding:12px}
+  .goal-strip .btn{width:100%}
+  .modal-cover:has(.guide-modal){align-items:flex-end}
+  .guide-body{font-size:14px;line-height:1.8}
+  .top-right .btn{padding:6px 9px}
+}
