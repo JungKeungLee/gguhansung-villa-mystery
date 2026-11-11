@@ -33,6 +33,11 @@ const E={
  E03:{name:'NVR 영상 속 벽시계',where:'관리실 확대',text:'CCTV 표시가 22:34:13인 프레임 안의 별장 배터리식 벽시계는 약 23:01을 가리킨다. 벽시계는 오후에 맞춰진 사실이 다른 사진으로 확인되며, 정전과 관계없이 작동한다.'},
  E12:{name:'차량 블랙박스 부분 영상',where:'테라스 · 장도윤',text:'장도윤이 제공한 차량 영상에는 정전 중 22:27경 외부 통로에서 붉은 빛이 이동하는 모습이 찍혀 있다. 어둡고 비가 내려 인물은 식별할 수 없다.'}
 };
+const EVIDENCE_IMAGES = {
+  E04d:'assets/evidence/group-2250.webp',
+  E03:'assets/evidence/nvr-wallclock-223413.webp',
+  E05:'assets/evidence/smartwatch-last-activity-2241.webp'
+};
 const ROOM_ACTIONS={
  living:[['E04a','단체사진 다시 확인','처음 알아낸 시간 차이의 기준'],['E04b','김옥독의 긴 휴대폰 영상','정전 중 휴대전화의 실제 촬영 시각'],['E04d','다뮤_가 보낸 22:50 사진','복구 후에도 보이지 않는 사람']],
  management:[['E01','오후 정전 기록','7분 오차의 출발점'],['E02','녹화기 다시 보기','22:34 프레임과 끊긴 파일'],['E03','NVR 프레임 확대','영상 속 독립적인 벽시계']],
@@ -81,8 +86,8 @@ function begin(){const name=CH2?.name||CH1?.name||'여행 친구';const imported
 function collect(id){if(!state||state.stage!=='investigate'||!E[id])return;if(id==='E03'&&!(solved('P04')&&solved('P05'))){showToast('아직 NVR 확대 영상이 개방되지 않았어. 정전 길이와 사건 시간대를 먼저 조사해 보자.');return;}
 if(id==='E12'&&!confronted('DOYUN')){showToast('이 영상은 차량 소유자의 동의를 받은 뒤에 확인할 수 있어. 장도윤과 먼저 이야기해 보자.');return;}
 if(!has(id)){state.evidence.push(id);log(`새 자료 · ${E[id].name}`);save();}
-detail(E[id].name,E[id].text,E[id].where);}
-function detail(title,body,tag='자료'){modal={kind:'detail',title,body,tag};render();}
+detail(E[id].name,E[id].text,E[id].where,id);}
+function detail(title,body,tag='자료',evidenceId=''){modal={kind:'detail',title,body,tag,image:EVIDENCE_IMAGES[evidenceId]||null};render();}
 function talk(name){if(!state||state.stage!=='investigate')return;if(!state.talked.includes(name)){state.talked.push(name);save();}
 const scripts={
  '꾸티뉴':[['꾸티뉴',solved('P06')?'우리가 맞춘 건 알리바이 하나가 틀렸다는 거야. 범인을 지목하려면 이동 경로나 동기가 더 필요해.':'오후 정전만 생각하면 안 될 것 같아. 밤에 불이 꺼진 시간도 기록으로 확인해 보자.','night']],
@@ -155,7 +160,7 @@ return `<p class="small muted">질문을 자유롭게 적어 봐. 의미를 일�
 }
 function finish(){return `${top()}<main class="finish-screen"><div class="finish-card"><div class="finish-art" role="img" aria-label="밤의 테라스"></div><div class="finish-copy"><span class="tag good">CHAPTER 03 COMPLETE</span><h1>두 번째 시계가<br>멈춘 자리</h1><p>서로 다른 영상과 진술을 연결해 정전의 길이와 사건 시간대를 좁혔다. 7분만 보정한 알리바이는 성립하지 않았다. 그렇다고 그 사람을 범인으로 확정할 수는 없다.</p><div class="chip-row"><span class="chip good">P04 검증</span><span class="chip good">P05 검증</span><span class="chip good">P06 검증</span><span class="chip good">시간표 완성</span></div><p>다음 챕터에서는 외부 통로의 흔적과 서로 다른 거짓말의 이유를 확인하게 돼.</p><div class="buttons"><a class="btn btn-primary" href="chapter4.html">CHAPTER 04 · 플레이</a><button class="btn" data-action="revisit">다시 조사하기</button><a class="btn btn-subtle" href="index.html">메인으로</a></div></div></div></main>`;}
 function renderModal(){if(!modal)return '';if(modal.kind==='dialogue'){const row=modal.lines[modal.index],narr=row[0]==='내레이션',src=portrait(row[0],row[2]||'night');return `<div class="modal-cover"><div class="modal ${narr?'narration':''}" role="dialog" aria-modal="true" aria-label="대화">${modal.loading?`<div class="dialogue-text"><p>장면을 준비 중이야…</p></div>`:`${narr?'':`<div class="dialogue-view">${src?`<img src="${esc(src)}" alt="">`:''}</div>`}<div class="dialogue-text">${narr?'':`<div class="speaker">${esc(row[0])}</div>`}<p>${esc(row[1])}</p></div><div class="dialogue-next"><span class="small muted">${modal.index+1} / ${modal.lines.length}</span><button class="btn btn-primary" data-action="next">${modal.index===modal.lines.length-1?'확인':'다음 ›'}</button></div>`}</div></div>`;}
-return `<div class="modal-cover"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(modal.title)}"><div class="modal-head"><h3>${esc(modal.title)}</h3><button class="btn btn-small btn-subtle" data-action="close" aria-label="닫기">✕</button></div><div class="modal-body"><span class="tag">${esc(modal.tag)}</span><div class="line"></div><p>${esc(modal.body)}</p><div class="modal-buttons"><button class="btn btn-primary" data-action="close">확인</button></div></div></div></div>`;}
+return `<div class="modal-cover"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(modal.title)}"><div class="modal-head"><h3>${esc(modal.title)}</h3><button class="btn btn-small btn-subtle" data-action="close" aria-label="닫기">✕</button></div><div class="modal-body"><span class="tag">${esc(modal.tag)}</span><div class="line"></div>${modal.image?`<img class="ch3-evidence-image" src="${esc(modal.image)}" alt="${esc(modal.title)} 증거 이미지" loading="eager" onerror="this.remove()">`:``}<p>${esc(modal.body)}</p><div class="modal-buttons"><button class="btn btn-primary" data-action="close">확인</button></div></div></div></div>`;}
 function render(){app.innerHTML=`<div class="ch3">${!state?welcome():state.stage==='complete'?finish():game()}${renderModal()}${toast?`<div class="toast" role="status">${esc(toast)}</div>`:''}</div>`;}
 app.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const action=el.dataset.action,id=el.dataset.id||'';switch(action){
  case 'begin':begin();break;case 'room':if(ROOMS.some(r=>r.id===id)){state.room=id;notice='';save();render();}break;
