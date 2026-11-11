@@ -34,6 +34,9 @@ const E={
  E12:{name:'차량 블랙박스 부분 영상',where:'테라스 · 장도윤',text:'장도윤이 제공한 차량 영상에는 정전 중 22:27경 외부 통로에서 붉은 빛이 이동하는 모습이 찍혀 있다. 어둡고 비가 내려 인물은 식별할 수 없다.'}
 };
 const EVIDENCE_IMAGES = {
+  E04b:'assets/evidence/phone-video-blackout-2231.webp',
+  E04c:'assets/evidence/phone-video-restored-2246.webp',
+  E06:'assets/evidence/kitchen-timer-0036.webp',
   E04d:'assets/evidence/group-2250.webp',
   E03:'assets/evidence/nvr-wallclock-223413.webp',
   E05:'assets/evidence/smartwatch-last-activity-2241.webp'
