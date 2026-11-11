@@ -1,0 +1,59 @@
+name: Install nine guest character images
+on:
+  push:
+    branches: [main]
+    paths:
+      - gguhansung_characters_9_separate.zip
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify and extract nine WebP images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          zpath=Path('gguhansung_characters_9_separate.zip')
+          people=('lee-yuna','jang-doyun','yoon-haejun')
+          emotions=('normal','night','surprised')
+          paths=[f'assets/characters/{person}/{emotion}.webp' for person in people for emotion in emotions]
+          with ZipFile(zpath) as z:
+              missing=[p for p in paths if p not in z.namelist()]
+              if missing:
+                  raise RuntimeError(f'ZIP is missing required image paths: {missing}')
+              for item in paths:
+                  data=z.read(item)
+                  if not (data[:4]==b'RIFF' and data[8:12]==b'WEBP'):
+                      raise RuntimeError(f'Invalid WebP image: {item}')
+                  dest=Path(item)
+                  dest.parent.mkdir(parents=True,exist_ok=True)
+                  dest.write_bytes(data)
+          src=Path('chapter2.js')
+          js=src.read_text(encoding='utf-8')
+          mapping="const EXTRA_GUEST_PATHS={'이유나':'lee-yuna','장도윤':'jang-doyun','윤해준':'yoon-haejun'};\n"
+          if 'const EXTRA_GUEST_PATHS=' not in js:
+              anchor='function portrait(name,variant='
+              if anchor not in js:
+                  raise RuntimeError('Cannot find portrait() in chapter2.js')
+              js=js.replace(anchor,mapping+anchor,1)
+          original="function portrait(name,variant='normal'){if(GUEST_PORTRAITS[name])"
+          revised="function portrait(name,variant='normal'){if(EXTRA_GUEST_PATHS[name])return `assets/characters/${EXTRA_GUEST_PATHS[name]}/${variant}.webp`;if(GUEST_PORTRAITS[name])"
+          if original in js:
+              js=js.replace(original,revised,1)
+          elif "if(EXTRA_GUEST_PATHS[name])" not in js:
+              raise RuntimeError('portrait() signature changed; stop rather than modifying unknown code')
+          src.write_text(js,encoding='utf-8')
+          zpath.unlink()
+          PY
+      - name: Commit character image assets and mapping
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A assets/characters/lee-yuna assets/characters/jang-doyun assets/characters/yoon-haejun chapter2.js gguhansung_characters_9_separate.zip
+          git commit -m "feat: deploy Yuna, Doyun and Haejun expression sprites"
+          git push origin HEAD:main
