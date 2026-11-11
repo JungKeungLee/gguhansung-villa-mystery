@@ -55,12 +55,13 @@ export default async function handler(req, res) {
         generationConfig:{maxOutputTokens:300,temperature:0.2}
       })
     });
-    if (!resp.ok) return reply(res,resp.status===429?429:502,{error:resp.status===429?'Gemini 무료 사용 한도에 도달했습니다.':'Gemini 응답을 가져오지 못했습니다.'});
+    if (!resp.ok) { console.error('Gemini upstream HTTP status:',resp.status); return reply(res,resp.status===429?429:502,{error:resp.status===429?'Gemini 무료 사용 한도에 도달했습니다.':'Gemini 응답을 가져오지 못했습니다.'}); }
     const data = await resp.json();
     const answer=(data.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('').trim().slice(0,900);
     if (!answer) return reply(res,502,{error:'답변이 비어 있습니다.'});
     return reply(res,200,{answer});
-  } catch {
+  } catch (err) {
+    console.error('Gemini request error:',err?.name || 'Error');
     return reply(res,502,{error:'AI 요청이 지연되거나 실패했습니다.'});
   } finally {clearTimeout(timeout);}
 }
