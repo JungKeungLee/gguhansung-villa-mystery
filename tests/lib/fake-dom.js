@@ -24,7 +24,8 @@ function boot(file, storage = {}, root = PROJECT_ROOT) {
   const env = {
     app, storage, errors,
     // data-action(챕터 1~3)과 data-act(챕터 4~5)를 모두 지원
-    click: async (act, id = '') => { ev('click', { closest: () => ({ dataset: { act, action: act, id } }) }); await tick(); },
+    // 클릭된 요소도 실제 DOM처럼 closest()를 가진다(가짜 DOM에는 조상이 없으므로 null)
+    click: async (act, id = '') => { const el = { dataset: { act, action: act, id }, closest: () => null }; ev('click', { closest: () => el }); await tick(); },
     change: async (dataset, value) => { ev('change', { dataset, value }); await tick(); },
     // 챕터 2처럼 instanceof HTMLInputElement 를 확인하는 라디오/입력칸 선택
     changeInput: async (dataset, value) => { ev('change', Object.assign(Object.create(ctx.HTMLInputElement.prototype), { dataset, value, checked: true })); await tick(); },

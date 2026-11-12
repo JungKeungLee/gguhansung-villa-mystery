@@ -59,3 +59,14 @@ a.btn-primary{color:#22283b}
   .guide-body{font-size:14px;line-height:1.8}
   .top-right .btn{padding:6px 9px}
 }
+
+/* 장소 이동·조사 도구(챕터 2~4): 현재 열린 탭 표시, 이동 대상 위 여백, 태블릿·모바일 터치 크기 */
+.rail-bottom .btn.active{border-color:#c4a176;background:#3a4862;color:#f9e5bf;box-shadow:inset 3px 0 0 #e6c48c}
+.context,.side .card{scroll-margin-top:12px}
+@media(max-width:1000px){.rail-bottom .btn{min-height:44px}}
+/* 챕터 3 진술 반박: 진술 아래에서 바로 자료 선택 */
+.ch3 .confront-proofs{margin-top:8px}
+.ch3 .confront-proofs .proof-group{margin:6px 0 2px}
+/* 잠긴 조사 카드(열림 조건 표시) */
+.action-tile.locked{border-style:dashed;border-color:#6d7891;background:#20293c}
+.action-tile.locked span{color:#e5cf9f}
