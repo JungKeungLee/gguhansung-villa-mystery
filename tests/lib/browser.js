@@ -96,9 +96,11 @@ async function launch({ width = 1365, height = 900, mobile = false } = {}) {
     async clickLink(href) { await page.ev(`(()=>{const a=[...document.querySelectorAll('a')].find(a=>a.getAttribute('href')===${JSON.stringify(href)});if(!a)throw new Error('링크 없음: ${href}');a.click();return 1})()`); await sleep(300); await page.waitFor(`location.pathname.endsWith(${JSON.stringify('/' + href)})&&document.readyState==="complete"`); await sleep(250); },
     text: () => page.ev('document.body.innerText'),
     // 실제 마우스(터치 에뮬레이션 시 탭) 입력으로 요소 중앙을 클릭 — 다른 요소에 가려지면 그 요소가 클릭된다
-    async realClick(selector) {
-      const c = await page.ev(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)return null;e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}})()`);
+    // { noScroll: true } 이면 스크롤하지 않고 현재 화면 위치 그대로 클릭(스크롤 동작 검사용, 화면 밖이면 오류)
+    async realClick(selector, { noScroll = false } = {}) {
+      const c = await page.ev(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)return null;${noScroll ? '' : "e.scrollIntoView({block:'center'});"}const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,vis:r.bottom>0&&r.top<innerHeight&&r.left+r.width/2>0&&r.left+r.width/2<innerWidth}})()`);
       if (!c) throw new Error('요소 없음: ' + selector);
+      if (!c.vis) throw new Error('화면 밖 요소: ' + selector);
       for (const type of ['mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', { type, x: c.x, y: c.y, button: 'left', clickCount: 1 });
       await sleep(200);
     },

@@ -37,6 +37,7 @@ else {
     run('초보자 안내 화면(PC·모바일)', ['tests/browser-guide.test.js']);
     run('챕터 1 장면·대화창(PC·태블릿·모바일)', ['tests/browser-ch1-scene.test.js']);
     run('챕터 2 추리 보드 실제 클릭(PC·태블릿·모바일)', ['tests/browser-ch2-board.test.js']);
+    run('챕터 3 진행 흐름 실제 클릭(PC·태블릿·모바일)', ['tests/browser-ch3-flow.test.js']);
     run('챕터 1~5 전체 플레이(PC·모바일)', ['tests/browser-playthrough.test.js']);
   }
 }
