@@ -84,7 +84,8 @@ const CH2_ANSWERS = ['이유나의 접촉 부인 진술과 사진이 모순된�
   ok(g.html().includes('근거 자료 1 / 2 확보 · 찾아볼 곳: 「인물」 탭의 대화'), '자료를 얻으면 현황 갱신');
   await g.click('talk', '이유나'); await g.drain();
   ok(g.html().includes('근거 자료 2 / 2 확보 · 자료 버튼에서 선택해 검증해 봐'), '모두 확보하면 다음 행동 안내');
-  ok(JSON.stringify(Object.keys(g.save(KEYS.ch2)).sort()) === JSON.stringify(CH2_SAVE_KEYS), '챕터 2 저장 형식 변경 없음');
+  // qa = 선택형 Q&A 물어봄 기록(선택 항목, 예전 저장에는 없어도 됨)
+  ok(JSON.stringify(Object.keys(g.save(KEYS.ch2)).filter(k => k !== 'qa').sort()) === JSON.stringify(CH2_SAVE_KEYS), '챕터 2 저장 형식 변경 없음(선택 항목 qa 제외)');
   await g.click('guide'); ok(guideOpen(g), '「게임 방법」으로 다시 열기'); await g.click('close');
 
   T.section('챕터 2 — 기존 저장');

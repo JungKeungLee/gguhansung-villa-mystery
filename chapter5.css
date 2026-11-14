@@ -23,6 +23,15 @@
 .ch5 .slot-top{color:#f2dba9;font-size:13px;font-weight:850;display:flex;justify-content:space-between;gap:12px}
 .ch5 .slot small{color:#b5c4d5;line-height:1.6;font-size:11px}
 .ch5 .slot select{width:100%}
+/* 재구성 칸 힌트: 마우스 툴팁 대신 누르면 펼쳐짐(모바일 지원). 터치 영역 36px 이상 */
+.ch5 .slot-hint summary{cursor:pointer;color:#e9cf98;font-size:12px;font-weight:800;min-height:36px;display:flex;align-items:center;gap:6px;list-style:none}
+.ch5 .slot-hint summary::-webkit-details-marker{display:none}
+.ch5 .slot-hint summary::before{content:"?";border:1px solid #7f90a5;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:10px;color:#cbd8e5}
+.ch5 .slot-hint[open] summary{color:#f5dfae}
+.ch5 .slot-hint p{margin:0;color:#cbd8e5;font-size:12px;line-height:1.6;background:#1b2538;border-radius:8px;padding:8px 10px}
+/* BAD 엔딩: 기록과 충돌한 영역 */
+.ch5 .bad-areas{background:#3a2430;border:1px solid #a86b7c;border-radius:10px;padding:10px 12px;color:#ffd9e0}
+.ch5 .bad-areas strong{color:#ffb8c6}
 .ch5 .question-mark{border:1px solid #7f90a5;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#cbd8e5;cursor:help}
 .ch5 .proof-slot{grid-column:1/-1}
 .ch5 .proof-select{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#d2e1e4;font-size:12px}
