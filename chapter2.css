@@ -101,3 +101,4 @@ a.btn-primary{color:#22283b}
 .scene .hotspot.locked .hotspot-pin{background:#6d7891;font-size:9px}
 .scene .hotspot.locked .hotspot-note{color:#e5cf9f}
 @media(max-width:520px){.scene .hotspot{padding:6px 10px;gap:6px}.scene .hotspot-note{font-size:9px}}
+.ch2-evidence-image{display:block;width:100%;height:auto;max-height:55vh;object-fit:contain;margin:0 0 14px;border:1px solid #ffffff30;border-radius:12px;background:#101827}
