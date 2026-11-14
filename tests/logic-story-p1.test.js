@@ -153,5 +153,17 @@ async function fill(g, opts = {}) {
   g = boot('chapter5.js', { [K.ch4]: JSON.stringify(CH4_DONE) });
   ok(g.html().includes('마지막 추리 시작'), '챕터 4 완료 저장(이전 형식) → 챕터 5 진입 가능');
 
+  T.section('챕터 5 시간표 근거 E17·E18 (2026-11-14)');
+  g = boot('chapter5.js', { [K.ch4]: JSON.stringify(CH4_DONE) });
+  await g.click('begin'); await g.drain();
+  ok(['E17', 'E18', 'E03', 'E16'].every(id => g.save(K.ch5).evidence.includes(id)), '새 게임: 챕터 5 시작 시 E17·E18 지급(E03·E16 기존 유지)');
+  const c5now = src('chapter5.js');
+  ok(c5now.includes("E17:'assets/evidence/e17-nvr-hallway-exit-2214.webp'") && c5now.includes("E18:'assets/evidence/e18-nvr-hallway-return-222813.webp'"), 'E17·E18 이미지 경로 연결');
+  ok(['e17-nvr-hallway-exit-2214.webp', 'e18-nvr-hallway-return-222813.webp', 'e03-nvr-wallclock-223413.webp'].every(f => fs.existsSync(path.join(PROJECT_ROOT, 'assets', 'evidence', f))), 'E03·E17·E18 이미지 파일 존재');
+  ok(/id:'left'[^}]*correct:'22:21'[^}]*E17/.test(c5now) && /id:'return'[^}]*correct:'22:55'[^}]*E18/.test(c5now), '시간표 힌트가 E17(이탈)·E18(복귀)을 가리키고 정답 22:21·22:55는 그대로');
+  const legacy5 = JSON.parse(JSON.stringify(ch5ReadyToClaim())); legacy5.evidence = (legacy5.evidence || []).filter(id => id !== 'E17' && id !== 'E18');
+  g = boot('chapter5.js', { [K.ch4]: JSON.stringify(CH4_DONE), [K.ch5]: JSON.stringify(legacy5) });
+  await g.click('read', 'E18'); ok(g.html().includes('e18-nvr-hallway-return-222813.webp') && g.errors.length === 0, '예전 저장: E17·E18 보충 → E18 보기 시 이미지 표시');
+
   const r = T.done(); process.exit(r.fail ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(1); });
