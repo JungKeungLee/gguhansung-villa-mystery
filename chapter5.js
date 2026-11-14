@@ -17,6 +17,8 @@ const ALLOWED=CH4?.stage==='complete' && CH4_REQUIRED.every(id=>CH4?.solved?.inc
 const E={
  'E03':['NVR 속 벽시계','CCTV 표시 22:34:13과 실내 독립 벽시계 약 23:01을 비교하는 자료.'],
  'E04b':['정전 중 휴대폰 영상','독립적인 휴대폰의 시각과 둔탁한 소리로 사건 시간대를 추정한다.'],
+ 'E17':['NVR 22:14 복도 문 프레임','CCTV 표시 22:14인 복도 문 쪽 확대 프레임. 윤해준이 거실에서 복도 문으로 나간다. 당시 NVR 오차를 적용해 실제 시각을 구한다.'],
+ 'E18':['NVR 22:28:13 복도 문 프레임','CCTV 표시 22:28:13인 복도 문 쪽 확대 프레임. 윤해준이 복도 문으로 거실에 들어온다. 밤 정전 이후의 누적 오차를 적용해 실제 시각을 구한다.'],
  'E04d':['22:50 거실 단체사진','정전 복구 이후에도 윤해준이 사진에 보이지 않는다는 기록.'],
  'E06':['주방 경과 타이머','독립적인 복구 시각 추정에 도움이 되는 기록.'],
  'E07':['오세린 면담 녹음','22:16까지 피해자가 살아 있었고 22:30 약속을 앞두고 있었음을 뒷받침한다.'],
@@ -36,6 +38,8 @@ const E={
 };
 const EVIDENCE_IMAGES = {
   E16:'assets/evidence/e16-study-fireplace-closeup.webp',
+  E17:'assets/evidence/e17-nvr-hallway-exit-2214.webp',
+  E18:'assets/evidence/e18-nvr-hallway-return-222813.webp',
   E03:'assets/evidence/e03-nvr-wallclock-223413.webp',
   E04b:'assets/evidence/phone-video-blackout-2231.webp',
   E04d:'assets/evidence/e04d-group-photo-2250.webp',
@@ -56,12 +60,12 @@ const EVIDENCE_IMAGES = {
 };
 const FINALE_PORTRAITS={'윤해준':'yoon-haejun','이유나':'lee-yuna','장도윤':'jang-doyun'};
 const TIME=[
- {id:'left',name:'윤해준이 거실을 떠남',correct:'22:21',why:'챕터 1에서 윤해준이 분전반을 확인하러 간다며 거실을 떠난 시각을 떠올려 봐.'},
+ {id:'left',name:'윤해준이 거실을 떠남',correct:'22:21',why:'CCTV 22:14 프레임(E17)에 윤해준이 복도 문으로 나가. 그때 NVR이 오후 정전으로 얼마나 느렸는지 더해 봐.'},
  {id:'off',name:'분전반 수동 OFF',correct:'22:24',why:'분전반 독립 기록의 수동 OFF 시각을 확인해.'},
  {id:'meet',name:'서재 테라스 약속',correct:'22:30',why:'서재 메모와 면담 녹음을 교차 확인해.'},
  {id:'impact',name:'사건 발생 추정 시간대',correct:'22:40~22:42',why:'충돌음과 참고 기록이 겹치는 시간대를 찾아 봐.'},
  {id:'on',name:'전원 복구',correct:'22:44',why:'분전반 로그와 주방 타이머를 비교해.'},
- {id:'return',name:'윤해준 거실 복귀',correct:'22:55',why:'22:50 사진에는 없고, 두 번 보정한 CCTV 프레임(23:01)에는 있어. 그 사이를 골라 봐.'}
+ {id:'return',name:'윤해준 거실 복귀',correct:'22:55',why:'CCTV 22:28:13 프레임(E18)에 윤해준이 복도 문으로 들어와. 두 번의 정전으로 쌓인 NVR 오차를 모두 더해 봐.'}
 ];
 const CLOCKS=['22:16','22:21','22:24','22:27','22:30','22:34','22:40~22:42','22:44','22:50','22:55','23:01','23:34'];
 const SLOTS=[
@@ -100,9 +104,12 @@ const NOTES={
  '다뮤_':['22:50 사진에는 그 사람이 안 나왔지만, 카메라 밖에 있었을 가능성은 분리해서 생각해야지.']
 };
 const PRESERVE=['E03','E04b','E04d','E06','E07','E08','E10','E11','E12','E13','E14','E15','C01','C04','C06','C09','C10'];
+// 시간표 근거 CCTV 프레임(E17 이탈·E18 복귀): 챕터 5에서 지급. 예전 저장에도 보충(저장 형식 그대로)
+const TIME_FRAMES=['E17','E18'];
 let state=read(CH5_KEY),tab='timeline',modal=null,dialogueCallback=null,imageCache=new Map(),sequence=0,notice='';
 function valid(s){return s&&s.version===1&&['reconstruct','rebuttal','ending'].includes(s.stage)&&s.timeline&&s.slots&&s.proofs&&s.secrets&&s.rebuttals&&Array.isArray(s.evidence);}
 if(!valid(state))state=null;
+if(Array.isArray(state?.evidence))for(const id of TIME_FRAMES)if(!state.evidence.includes(id))state.evidence.push(id);
 if(state?.timelineDone)tab=state.stage==='rebuttal'?'rebuttal':'reconstruct';
 function save(){if(state){try{localStorage.setItem(CH5_KEY,JSON.stringify(state));}catch{notice='진행 내용 저장에 실패했어. 브라우저 저장 공간을 확인해 줘.';}}}
 function has(id){return !!state?.evidence.includes(id);}
@@ -113,7 +120,7 @@ function speak(lines,callback=null){dialogueCallback=callback;modal={kind:'dialo
 async function prepareLine(){if(modal?.kind!=='dialogue')return;const key=++sequence,src=portrait(...modal.lines[modal.index]);modal.loading=!!src;render();await warm(src);if(key!==sequence||modal?.kind!=='dialogue')return;modal.loading=false;render();}
 function nextLine(){if(modal?.kind!=='dialogue'||modal.loading)return;if(modal.index+1<modal.lines.length){modal.index++;prepareLine();return;}const cb=dialogueCallback;dialogueCallback=null;modal=null;render();if(cb)cb();}
 function detail(title,body,evidenceId=''){modal={kind:'detail',title,body,image:EVIDENCE_IMAGES[evidenceId]||null};render();}
-function init(){if(!ALLOWED)return;const ch4ev=CH4?.evidence||[];const ch3ev=CH3?.evidence||[];state={version:1,stage:'reconstruct',name:CH4?.name||CH3?.name||CH1?.name||'여행 친구',evidence:[...new Set([...ch3ev,...ch4ev].filter(id=>PRESERVE.includes(id)))],timeline:{},slots:{},proofs:{},secrets:{},rebuttals:{},timelineDone:false,attempts:0,ending:null,startedAt:Date.now(),finishedAt:null,log:['03:20 — 모두가 모인 자리에서 사건을 다시 정리한다.']};if(!state.evidence.includes('E03'))state.evidence.push('E03');state.evidence.push('E16');save();speak([
+function init(){if(!ALLOWED)return;const ch4ev=CH4?.evidence||[];const ch3ev=CH3?.evidence||[];state={version:1,stage:'reconstruct',name:CH4?.name||CH3?.name||CH1?.name||'여행 친구',evidence:[...new Set([...ch3ev,...ch4ev].filter(id=>PRESERVE.includes(id)))],timeline:{},slots:{},proofs:{},secrets:{},rebuttals:{},timelineDone:false,attempts:0,ending:null,startedAt:Date.now(),finishedAt:null,log:['03:20 — 모두가 모인 자리에서 사건을 다시 정리한다.']};if(!state.evidence.includes('E03'))state.evidence.push('E03');state.evidence.push('E16');for(const id of TIME_FRAMES)if(!state.evidence.includes(id))state.evidence.push(id);save();speak([
  ['내레이션','새벽 3시 20분. 비가 조금 잦아들었다. 신고를 받은 경찰이 도착하기 전, 각자가 본 것과 들은 것을 다시 정리했다.'],
  ['꾸티뉴',`${state.name}, 이상한 사람을 고르는 걸로 끝내지 말자. 우리가 무엇을 근거로 그런 생각을 했는지가 중요해.`],
  ['윤타미','NVR 시간은 두 번 달라졌어. 시계를 한 번만 고치면 나중 영상의 시각이 맞지 않아.'],

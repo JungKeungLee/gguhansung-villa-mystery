@@ -50,7 +50,7 @@ D17 확정으로 E02·E04a가 추가되어 **9장**입니다. `상태`는 §4 �
 | C04 | c04-accident-news.webp | 다른 장소·부상·부실 (F4) | **적용 완료** (PR #12) | — |
 | E07 | e07-ohserin-interview-recording.webp | 다른 녹음 (F7) | **적용 완료** (PR #12) | — |
 | E15 | e15-burned-document.webp | 다른 문서·번호 (F1) | **적용 완료** (PR #12) | — (촬영 위치 A안) |
-| E03 | e03-nvr-wallclock-223413.webp | 윤해준 없음, 다른 거실 (F5, F22, F23) | **조건부 최종 후보** (`needs-review:E02-compare`, 2026-11-13) | E02 완성 후 같은 CCTV·거실로 보이는지 최종 비교. 게임 미교체 |
+| E03 | e03-nvr-wallclock-223413.webp | 윤해준 없음, 다른 거실 (F5, F22, F23) | **적용 완료** (2026-11-14, E02 비교 통과: 밝기 2.5%·채도 4.6%·구조 약 12px) | E02 완성 후 같은 CCTV·거실로 보이는지 최종 비교. 게임 미교체 |
 | E02 | e02-living-room-cctv-2205.webp | 다른 거실 (F22, F26) | **v3 적용(2026-11-14), 알려진 문제 있음**: 만조·하루노츠키·꾸티뉴 외형이 E04a와 다름 | CH-03 v2 + 확정된 E04a(셀카)와 같은 순간. 준비물 `work/e02/v2/`. 최종 이미지 생성은 별도 승인 |
 | E04a | e04a-group-photo-2212.webp | — | **원본 확정** (2026-11-13, `final-original`) | 현재 게임 이미지(SHA-256 `bd6fc9e4…`)를 그대로 사용. 재생성·AI 수정·합성 금지 |
 | E04d | e04d-group-photo-2250.webp | E04a 복제, 셀카 구도 (F6, F25) | **바로 제작 가능** (`ready`) | D18 확정(2026-11-13): 김옥독·만조·윤타미·난워니·야무지. CH-03 기준 장면은 필요 없음(시점이 다름) |
@@ -904,7 +904,7 @@ labels blank or blurred. Dim basement, concrete wall. No hands, no people, no ar
     "text": { "sender": "난워니", "sent_time": "22:12" }
   },
   "E03": {
-    "template": "nvr", "status": "needs-review:E02-compare", "size": [1448, 1086],
+    "template": "nvr", "status": "applied", "size": [1448, 1086],
     "current": "assets/evidence/e03-nvr-wallclock-223413.webp",
     "refs": ["assets/backgrounds/living.webp", "assets/characters/yoon-haejun/normal.webp"],
     "text": { "time": "22:34:13", "zoom": "ZOOM ×2.0" },
@@ -912,14 +912,14 @@ labels blank or blurred. Dim basement, concrete wall. No hands, no people, no ar
   },
   "E17": {
     "template": "nvr", "status": "ready", "size": [1448, 1086],
-    "current": "assets/evidence/e17-nvr-hallway-exit-2214.webp", "new_evidence": true,
+    "current": "assets/evidence/e17-nvr-hallway-exit-2214.webp",
     "refs": ["assets/backgrounds/living.webp", "assets/characters/yoon-haejun/normal.webp"],
     "text": { "time": "22:14", "zoom": "ZOOM ×2.0" },
     "wall_clock": "22:21", "wall_clock_legible": false
   },
   "E18": {
     "template": "nvr", "status": "ready", "size": [1448, 1086],
-    "current": "assets/evidence/e18-nvr-hallway-return-222813.webp", "new_evidence": true,
+    "current": "assets/evidence/e18-nvr-hallway-return-222813.webp",
     "refs": ["assets/backgrounds/living.webp", "assets/characters/yoon-haejun/normal.webp"],
     "text": { "time": "22:28:13", "zoom": "ZOOM ×2.0" },
     "wall_clock": "22:55", "wall_clock_legible": false
