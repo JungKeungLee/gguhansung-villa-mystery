@@ -27,15 +27,27 @@ function signature(seed, w = 150, h = 50) {
 }
 const smudge = (seed, w) => { const r = rng(seed); return `<div class="smudge">${[0, 1].map(() => `<i style="width:${Math.round(w * (0.45 + r() * 0.45))}px"></i>`).join('')}</div>`; };
 
-function clockSvg(time, d, legible) {
+// 색을 비율만큼 어둡게(f<1)/밝게(f>1)
+const shade = (hex, f) => '#' + hex.replace('#', '').match(/../g).map(v => Math.max(0, Math.min(255, Math.round(parseInt(v, 16) * f))).toString(16).padStart(2, '0')).join('');
+// 벽시계. st(선택, layout.clock에서 전달): face·rim·ink 색, shade(판 가장자리 명암), grain(미세 노이즈), shadow(벽 그림자), soft(흐림 px).
+// st가 없으면 이전과 같은 모양으로 그린다.
+function clockSvg(time, d, legible, st = {}) {
   const [h, m] = time.split(':').map(Number);
   const ha = ((h % 12) + m / 60) * 30, ma = m * 6, c = d / 2;
-  const ticks = Array.from({ length: 12 }, (_, i) => `<line x1="${c}" y1="${d * 0.07}" x2="${c}" y2="${d * 0.15}" stroke="#222" stroke-width="${d * 0.02}" transform="rotate(${i * 30} ${c} ${c})"/>`).join('');
-  return `<svg width="${d}" height="${d}" viewBox="0 0 ${d} ${d}" style="${legible ? '' : 'filter:blur(2.2px);opacity:.8'}" data-clock="${esc(time)}">
-<circle cx="${c}" cy="${c}" r="${c - 3}" fill="#f4efe4" stroke="#4a3624" stroke-width="${d * 0.05}"/>${ticks}
-<line x1="${c}" y1="${c}" x2="${c}" y2="${d * 0.27}" stroke="#111" stroke-width="${d * 0.045}" stroke-linecap="round" transform="rotate(${ha} ${c} ${c})"/>
-<line x1="${c}" y1="${c}" x2="${c}" y2="${d * 0.12}" stroke="#111" stroke-width="${d * 0.025}" stroke-linecap="round" transform="rotate(${ma} ${c} ${c})"/>
-<circle cx="${c}" cy="${c}" r="${d * 0.03}" fill="#111"/></svg>`;
+  // 판독 불가(legible=false): 바늘·눈금 대비를 낮추고(dimInk) 3.5px 흐림 + 유리 반사 하이라이트로 확대해도 바늘 방향이 읽히지 않게 함(E02, F26)
+  const dim = st.dimInk || '#a29d94';
+  const face = st.face || '#f4efe4', rim = st.rim || '#4a3624', tick = legible ? (st.ink || '#222') : dim, hand = legible ? (st.ink || '#111') : dim;
+  const ticks = Array.from({ length: 12 }, (_, i) => `<line x1="${c}" y1="${d * 0.07}" x2="${c}" y2="${d * 0.15}" stroke="${tick}" stroke-width="${d * 0.02}" transform="rotate(${i * 30} ${c} ${c})"/>`).join('');
+  const glareDef = legible ? '' : `<radialGradient id="clk-glare" cx="40%" cy="45%" r="50%"><stop offset="0" stop-color="#fff6e1" stop-opacity=".85"/><stop offset=".45" stop-color="#fff0d7" stop-opacity=".45"/><stop offset=".75" stop-color="#fff0d7" stop-opacity="0"/></radialGradient>`;
+  const glare = legible ? '' : `<ellipse cx="${d * 0.5}" cy="${d * 0.42}" rx="${d * 0.44}" ry="${d * 0.32}" fill="url(#clk-glare)"/>`;
+  const defs = (st.shade || st.grain || !legible) ? `<defs>${st.shade ? `<radialGradient id="clk-face" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="${shade(face, 1.06)}"/><stop offset="1" stop-color="${shade(face, 0.82)}"/></radialGradient>` : ''}${st.grain ? `<filter id="clk-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComposite in2="SourceAlpha" operator="in"/></filter>` : ''}${glareDef}</defs>` : ''; // 노이즈를 원(시계판) 모양으로만 자름
+  const filters = [legible ? (st.soft ? `blur(${st.soft}px)` : '') : 'blur(3.5px)', st.shadow ? 'drop-shadow(0 2px 2px #0007)' : ''].filter(Boolean).join(' ');
+  const style = (filters ? `filter:${filters};` : '') + (legible ? '' : 'opacity:1');
+  return `<svg width="${d}" height="${d}" viewBox="0 0 ${d} ${d}" style="${style}" data-clock="${esc(time)}">${defs}
+<circle cx="${c}" cy="${c}" r="${c - 3}" fill="${st.shade ? 'url(#clk-face)' : face}" stroke="${rim}" stroke-width="${d * (st.rim ? 0.06 : 0.05)}"/>${ticks}
+<line x1="${c}" y1="${c}" x2="${c}" y2="${d * 0.27}" stroke="${hand}" stroke-width="${d * 0.045}" stroke-linecap="round" transform="rotate(${ha} ${c} ${c})"/>
+<line x1="${c}" y1="${c}" x2="${c}" y2="${d * 0.12}" stroke="${hand}" stroke-width="${d * 0.025}" stroke-linecap="round" transform="rotate(${ma} ${c} ${c})"/>
+<circle cx="${c}" cy="${c}" r="${d * 0.03}" fill="${hand}"/>${glare}${st.grain ? `<circle cx="${c}" cy="${c}" r="${c - 3}" filter="url(#clk-grain)" opacity="${st.grain === true ? 0.14 : st.grain}" style="mix-blend-mode:multiply"/>` : ''}</svg>`;
 }
 
 function renderElement(e, item, common, o) {
@@ -132,7 +144,7 @@ const CSS = `*{box-sizing:border-box;margin:0}html,body{background:#000;overflow
 .nvr-tr{position:absolute;right:56px;top:44px;text-align:right}.nvr-tr .t:first-child{color:#ff3b30}
 .nvr-bl{position:absolute;left:56px;bottom:44px}.nvr-br{position:absolute;right:56px;bottom:40px;border:2px solid #f2f2f2cc;padding:6px 22px;background:#0006}
 .cn{position:absolute;width:60px;height:60px;border:3px solid #f2f2f2cc}.cn.a{left:18px;top:18px;border-right:0;border-bottom:0}.cn.b{right:18px;top:18px;border-left:0;border-bottom:0}.cn.c{left:18px;bottom:18px;border-right:0;border-top:0}.cn.d{right:18px;bottom:18px;border-left:0;border-top:0}
-.cctv #base{filter:saturate(.55) contrast(1.05) brightness(.8)}.cctv:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#ffffff08 0 2px,transparent 2px 4px);pointer-events:none}
+.cctv #base,.cctv .clock-layer{filter:saturate(.55) contrast(1.05) brightness(.8)}.cctv:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#ffffff08 0 2px,transparent 2px 4px);pointer-events:none}
 .chat-head{position:absolute;left:0;right:0;top:0;background:#14161b;display:flex;align-items:center;gap:28px;padding:0 40px;border-bottom:1px solid #2a2e36}.chat-head .back{color:#fff;font:300 80px sans-serif;margin-top:-12px}
 .chat-photo{position:absolute;left:0;right:0;bottom:0;background:#000}.chat-photo img{width:100%;height:100%;object-fit:contain}
 #sample-mark{position:fixed;right:10px;top:50%;transform:rotate(90deg);transform-origin:100% 0;font:700 22px sans-serif;color:#ff3b30;background:#fff;padding:4px 10px;opacity:.85}`;
@@ -166,7 +178,7 @@ function buildHtml(item, layout, common, o) {
     const head = layout.elements[0].header;
     body = `<div class="chat-photo" style="top:${px(head)}"><img id="base" src="${o.baseUrl}" style="position:static"></div><div id="overlay">${els}</div>`;
   } else {
-    const c = o.clock || layout.clock, clock = (o.drawClock && c) ? `<div style="position:absolute;left:${px(c.x)};top:${px(c.y)}">${clockSvg(item.wall_clock, c.d, item.wall_clock_legible)}</div>` : '';
+    const c = o.clock || layout.clock, clock = (o.drawClock && c) ? `<div class="clock-layer" style="position:absolute;left:${px(c.x)};top:${px(c.y)}">${clockSvg(item.wall_clock, c.d, item.wall_clock_legible, c)}</div>` : '';
     body = `<img id="base" src="${o.baseUrl}">${clock}<div id="overlay">${els}</div>`;
   }
   const cls = item.template === 'nvr' && (o.sample || o.cctvFilter) ? 'cctv' : '';

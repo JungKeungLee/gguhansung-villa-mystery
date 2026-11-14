@@ -42,6 +42,8 @@ node tools/evidence-compose/compose.js render <ID> --base <바탕 그림.png|web
 - `{ type: 'tone', quad, filter }` — 바탕 그림 일부(예: 기사 사진)에만 색 보정(흑백 등)을 겁니다.
 - `{ type: 'smudges', x, y, w, h, lines, opacity }` — 빈 칸을 판독 불가 흐린 인쇄 흔적으로 채웁니다(글자 아님).
 - `fragment`의 `transform`, `blend`, `soft` — 바닥에 누운 종이 원근(예: `scaleY(.72)`), 곱하기 합성, 살짝 흐림. 세로로 줄이는 만큼 글자를 키웁니다.
+- `clock`의 `face`·`rim`·`ink`(색), `shade`(판 명암), `grain`(미세 노이즈, 숫자는 불투명도), `shadow`(벽 그림자), `soft`(흐림 px) — 합성 시계를 원본 벽시계와 맞춥니다. `--cctv-filter`를 쓰면 시계에도 바탕과 같은 색감 필터가 적용됩니다(E03에서 사용).
+- 판독 불가 시계(SPEC `wall_clock_legible: false`, E02): 바늘·눈금을 낮은 대비 색(`dimInk`, 기본 `#a29d94`)으로 그리고 3.5px 흐림 + 유리 반사 하이라이트를 더하며, 원본 벽시계 바늘이 비치지 않게 불투명하게 덮습니다.
 - 바탕 그림 가장자리에 이음매 같은 결함이 있으면 원본은 두고 잘라 낸 사본(`work/`)을 바탕으로 씁니다.
 
 ## 안전장치
