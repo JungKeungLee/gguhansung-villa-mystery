@@ -22,5 +22,9 @@
   "assets/backgrounds/living.webp": {
     "bytes": 211850,
     "sha256": "1535525786af2b492ec283226b505c606fb40f401f0c846bc38c7a0c0e2f284a"
+  },
+  "assets/backgrounds/foyer.webp": {
+    "bytes": 186236,
+    "sha256": "c40e1059b88160a9b63ebb6d177add590cf4f42c5dfa381bb7b5eca79e380b6d"
   }
 }

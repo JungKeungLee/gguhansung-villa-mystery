@@ -144,7 +144,7 @@
     foyer:[
       {id:'guest-list',label:'투숙객 안내문',x:74,y:39,when:['day','dinner','late','night']},
       {id:'arrival-photo',label:'도착 사진',x:49,y:78,when:['late','night']},
-      {id:'cctv',label:'CCTV 화면',x:23,y:45,when:['late','night']},
+      {id:'cctv',label:'CCTV 화면',x:23,y:35,when:['late','night']},
       {id:'luggage',label:'여행 가방',x:45,y:83,when:['day','dinner']}
     ],
     corridor:[
@@ -404,6 +404,7 @@
   const SCENE_BACKGROUND_IMAGES = Object.freeze({
     exterior:['villa-exterior.webp','산속에 자리한 안개 낀 별장 외관'],
     living:['living.webp','벽난로와 커다란 창이 있는 따뜻한 별장 거실'],
+    foyer:['foyer.webp','CCTV 모니터와 투숙객 안내판, 여행 가방이 놓인 별장 현관'],
     kitchen:['kitchen.webp','큰 식탁과 조명이 있는 별장 주방과 식당'],
     corridor:['corridor.webp','객실로 이어지는 나무 복도와 문들'],
     terrace:['terrace.webp','산과 숲이 보이는 밤의 별장 테라스']
