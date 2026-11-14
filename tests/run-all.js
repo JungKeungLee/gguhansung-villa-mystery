@@ -43,6 +43,7 @@ else {
     run('챕터 3 진행 흐름 실제 클릭(PC·태블릿·모바일)', ['tests/browser-ch3-flow.test.js']);
     run('선택형 Q&A(챕터 2~4, PC·모바일)', ['tests/browser-qa.test.js']);
     run('사운드 시스템(PC·모바일)', ['tests/browser-sound.test.js']);
+    run('대사·증거 창 이미지(PC·모바일)', ['tests/browser-evidence-images.test.js']);
     run('챕터 1~5 전체 플레이(PC·모바일)', ['tests/browser-playthrough.test.js']);
   }
 }

@@ -324,7 +324,10 @@
         storm:[['내레이션','산길의 안개가 짙다. 비는 점점 거세지고 있다.'],['만조','오늘은 바깥으로 나가지 말자. 그냥 안에서 놀자.']]
       };
       // 다시 볼 때의 단서 설명은 서술문이므로 플레이어 대사가 아닌 내레이션으로 표시한다.
-      lines(fresh?scripts[id]:[['내레이션',`「${clue.title}」을 다시 확인했다.`],['내레이션',clue.text]]);
+      const said=fresh?scripts[id]:[['내레이션',`「${clue.title}」을 다시 확인했다.`],['내레이션',clue.text]];
+      // 대사가 설명하는 실제 증거 사진을 대화창에 함께 보여 준다(이미 있는 증거 이미지만, 장면과 정확히 같은 사진만)
+      if(CLUE_EVIDENCE_IMAGES[id])said.image=CLUE_EVIDENCE_IMAGES[id];
+      lines(said);
     }else{
       const flavor={fireplace:[['내레이션','벽난로의 장작이 타닥타닥 타오른다.']],clock:[['내레이션','배터리로 움직이는 벽시계가 규칙적으로 소리를 낸다.']],luggage:[['내레이션','가방들이 현관 옆에 쌓여 있다.']],fridge:[['내레이션','냉장고에는 음식과 음료가 가득하다.']],
         'guest-doors':[['내레이션','나란히 이어진 객실 문 앞에 여행가방이 놓여 있다. 새로 도착한 친구들은 어느 방을 쓸지 이야기 중이다.']],
@@ -409,6 +412,11 @@
     corridor:['corridor.webp','객실로 이어지는 나무 복도와 문들'],
     terrace:['terrace.webp','산과 숲이 보이는 밤의 별장 테라스']
   });
+  // 단서 대사 ↔ 증거 이미지: [경로, 설명]. 15:10 도착 사진 등 해당 이미지가 없는 단서는 넣지 않는다
+  const CLUE_EVIDENCE_IMAGES = Object.freeze({
+    argument:['assets/evidence/e09-barbecue-envelope.webp','20:41 야뿌의 바비큐 사진'],
+    cctv:['assets/evidence/e04a-group-photo-2212.webp','22:12 단체 채팅 사진']
+  });
   function sceneArt(){
     const bg=SCENE_BACKGROUND_IMAGES[state.location];
     if(bg) return `<img class="scene-art scene-photo ${state.phase==='night'?'scene-photo-night':''}" src="assets/backgrounds/${bg[0]}" alt="${bg[1]}" loading="eager" decoding="async">`;
@@ -439,7 +447,9 @@
       const memberImage = hasMemberPortrait(speaker) ? portraitPath(speaker,poseForLine(item)) : null;
       const portrait = memberImage ? `<img class="char-portrait" src="${esc(memberImage)}" alt="${esc(speaker)} 캐릭터" loading="eager" decoding="sync" fetchpriority="high">` : '';
       const illustration=narration?'':`<div class="dialogue-illustration ${memberImage?'has-portrait':''}"><span class="top-left">STORY / ${esc(STAGES[state.phase]?.heading||'프롤로그')}</span>${memberImage?'':`<div class="speaker-emblem" aria-hidden="true">${esc(speaker==='나'?'나':speaker.slice(0,1))}</div>`}${portrait}</div>`;
-      return `<div class="modal-backdrop" role="presentation"><section class="dialogue ${narration?'dialogue-narration':''}" role="dialog" aria-modal="true" aria-label="${narration?'이야기': '대화'}">${illustration}<div class="dialogue-body">${narration?'':`<div class="speaker-name">${esc(label)}</div>`}<div class="dialogue-text">${esc(item[1])}</div><div class="dialogue-footer"><span class="dialogue-progress">${overlay.index+1} / ${overlay.items.length} · Enter 또는 버튼으로 계속</span><div class="dialogue-controls"><button class="btn btn-primary" data-action="next">${overlay.index===overlay.items.length-1?'확인':'다음'} ${icon('arrow')}</button></div></div></div></section></div>`;
+      const evi=overlay.items.image;
+      const evidenceFig=evi?`<figure class="dlg-evidence"><img class="dlg-evidence-img" src="${esc(evi[0])}" alt="${esc(evi[1])}" decoding="async"><figcaption>${esc(evi[1])} · 눌러서 크게 보기</figcaption></figure>`:'';
+      return `<div class="modal-backdrop" role="presentation"><section class="dialogue ${narration?'dialogue-narration':''} ${evi?'has-evidence':''}" role="dialog" aria-modal="true" aria-label="${narration?'이야기': '대화'}">${evi?'':illustration}${evidenceFig}<div class="dialogue-body">${narration?'':`<div class="speaker-name">${esc(label)}</div>`}<div class="dialogue-text">${esc(item[1])}</div><div class="dialogue-footer"><span class="dialogue-progress">${overlay.index+1} / ${overlay.items.length} · Enter 또는 버튼으로 계속</span><div class="dialogue-controls"><button class="btn btn-primary" data-action="next">${overlay.index===overlay.items.length-1?'확인':'다음'} ${icon('arrow')}</button></div></div></div></section></div>`;
 
     }
     if(overlay.type==='guide'){

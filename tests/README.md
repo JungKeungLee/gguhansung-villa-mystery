@@ -44,3 +44,4 @@ node tests/run-all.js --no-browser # Chrome 없이 문법·로직 테스트만
 - 선택형 Q&A(챕터 2~4): `browser-qa.test.js`가 해금·답변·기록·잠긴 질문 비노출·예전 저장 호환을 실제 클릭으로 검사합니다.
 - 포인트 앤 클릭(챕터 2~4): `browser-hotspots.test.js`가 모든 조사 장소의 핫스팟 표시·화면 안·겹침 없음·터치 높이·클릭 획득·잠김(🔒)을 PC·모바일에서 검사합니다. 좌표 데이터는 `hotspots.js`.
 - 사운드(`sound.js`): `browser-sound.test.js`가 자동 재생 정책(첫 입력 뒤 시작)·페이지별 음악·엔딩 음악·빗소리·설정 저장·효과음 연타/동시 재생 제한·사건 효과음을 검사합니다.
+- 증거 이미지 표시(`zoom.js`, 챕터 1 단서 대사·챕터 2 증거 창): `browser-evidence-images.test.js`가 이미지 표시·대사와 겹침 없음·확대/닫기·대사 진행 유지를 검사합니다.
