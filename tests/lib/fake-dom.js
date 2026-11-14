@@ -19,7 +19,13 @@ function boot(file, storage = {}, root = PROJECT_ROOT) {
   const ctx = { document: { getElementById: () => app, addEventListener() {}, activeElement: null, querySelector: () => null },
     localStorage: ls, Image, window: { location: { assign() {} } }, location: { href: '' }, console: { ...console, warn() {}, error: (...a) => errors.push(a) },
     setTimeout, clearTimeout, AbortController, fetch: async () => { throw new Error('offline'); }, HTMLInputElement: class {} };
-  vm.runInNewContext(fs.readFileSync(path.join(root, file), 'utf8'), ctx, { filename: file });
+  // 챕터 2~4 HTML과 같은 순서로 선택형 Q&A 공용 파일을 먼저 불러온다(브라우저에서는 window 속성이 전역 변수)
+  vm.createContext(ctx);
+  if (/^chapter[234]\.js$/.test(file)) for (const f of ['qa-core.js', 'qa-data.js', 'hotspots.js']) {
+    if (fs.existsSync(path.join(root, f))) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), ctx, { filename: f });
+  }
+  ctx.QA_CORE = ctx.window.QA_CORE; ctx.QA_DATA = ctx.window.QA_DATA; ctx.HOTSPOTS = ctx.window.HOTSPOTS;
+  vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), ctx, { filename: file });
   const ev = (type, target) => (L[type] || []).forEach(f => f({ target, preventDefault() {} }));
   const env = {
     app, storage, errors,

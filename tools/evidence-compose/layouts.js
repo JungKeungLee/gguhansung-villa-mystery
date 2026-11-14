@@ -62,8 +62,15 @@ module.exports = {
     phone: { x: 474, y: 38, w: 500, h: 1010, quad: [[342, 120], [786, 16], [1111, 897], [620, 995]] },
     elements: [{ type: 'recorder', app: 36, title: 46, start: 44, length: 44, position: 44 }], // quad 변형으로 약 0.91배 축소되므로 변형 후에도 핵심 9px(모바일) 이상이 되게 키움
   },
-  E03: { elements: [{ ...NVR, zoomRef: 'zoom' }], clock: { x: 610, y: 170, d: 170 } },
-  E02: { elements: [NVR], clock: { x: 520, y: 210, d: 60 } },
+  // E03: CH-03 v2 승인 바탕(work/ch03/CH-03_living_CCTV_base_v2.webp)의 x 465~1189, y 230~773을 2배 확대한 바탕 기준.
+  // 시계는 원본 벽시계(중심 724,266 / 지름 약 116)를 완전히 덮도록 지름 150. 색은 원본 벽시계에서 측정한 값(판 약 #997661, 테두리 약 #1e150e~#2b190c)에 맞춤
+  E03: { elements: [{ ...NVR, zoomRef: 'zoom' }], clock: { x: 649, y: 191, d: 150, face: '#a3826b', rim: '#24170f', ink: '#1a110b', shade: true, grain: 0.16, shadow: true, soft: 0.5 } },
+  // E17: CH-03 v2 승인 바탕의 x 0~724, y 250~793을 2배 확대한 바탕(work/ch03/E17_bg_final_v3.png) 기준. 벽시계는 화면 밖이라 그리지 않음
+  E17: { elements: [{ ...NVR, zoomRef: 'zoom' }] },
+  // E18: E17과 같은 확대 바탕(work/ch03/E18_bg_final_v1.png). 벽시계 화면 밖
+  E18: { elements: [{ ...NVR, zoomRef: 'zoom' }] },
+  // E02: CH-03 v2 승인 바탕 전체 프레임(1.0배). 시계는 원본 벽시계(중심 827,363 / 지름 약 58)를 덮는 승인 측정값. 판독 불가(templates.js legible=false 처리)
+  E02: { elements: [NVR], clock: { x: 796, y: 331, d: 62, face: '#f4efe4', rim: '#2b2219', shade: true, grain: 0.14, shadow: true } },
   E04a: { elements: [CHAT] },
   E04d: { elements: [CHAT] },
 };

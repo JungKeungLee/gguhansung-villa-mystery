@@ -69,4 +69,35 @@ a.btn-primary{color:#22283b}
 .ch3 .confront-proofs .proof-group{margin:6px 0 2px}
 /* 잠긴 조사 카드(열림 조건 표시) */
 .action-tile.locked{border-style:dashed;border-color:#6d7891;background:#20293c}
-.action-tile.locked span{color:#e5cf9f}
+.action-tile.locked span{color:#e5cf9f}/* 포인트 앤 클릭 핫스팟(시범): 배경 사진이 cover로 잘려도 같은 비율 상자에 놓아 물체 위에 맞춤 */
+.scene{container-type:size}
+.scene .scene-stage{position:absolute;left:50%;top:50%;width:max(100cqw,calc(100cqh * 16 / 9));height:max(100cqh,calc(100cqw * 9 / 16));transform:translate(-50%,-50%);z-index:3;pointer-events:none}
+.scene .hotspot{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;min-height:44px;display:flex;align-items:center;gap:7px;padding:8px 13px;border-radius:30px;border:1px solid #f0c47b94;background:#111a30d9;color:#fff1d8;font-size:12px;font-weight:800;white-space:nowrap;box-shadow:0 7px 22px #0008;backdrop-filter:blur(6px);cursor:pointer}
+.scene .hotspot:hover{background:#5d4529}
+.scene .hotspot:active:not(:disabled){transform:translate(-50%,-50%) scale(.97)}
+.scene .hotspot:focus-visible{outline:3px solid #f1cd91;outline-offset:2px}
+.scene .hotspot .hotspot-pin{width:18px;height:18px;border-radius:50%;background:#dbb678;color:#1d273b;display:grid;place-items:center;font-size:11px;font-weight:900}
+.scene .hotspot.done{border-color:#4b7a69;background:#1e3533e0}
+.scene .hotspot.done .hotspot-pin{background:#8fd0b1}
+.hotspot-hint{margin:-6px 0 10px}
+@media(max-width:520px){.scene .hotspot{font-size:11px;padding:7px 11px}}
+/* 사전 제작 Q&A 목록(인물 탭) */
+.qa-box{margin-top:14px;padding-top:12px;border-top:1px solid #ffffff1c}
+.qa-list{display:grid;gap:7px}
+.qa-q{display:flex;align-items:center;gap:8px;text-align:left;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid #485a76;background:#243149;font-size:12px;line-height:1.5}
+.qa-q:hover{background:#35445d}
+.qa-q.done{border-color:#4b7a69;background:#233b3b}
+.qa-present{flex:none;font-size:10px;font-weight:800;color:#2a2a39;background:#f0c47b;border-radius:6px;padding:3px 6px}
+.qa-mark{margin-left:auto;color:#a5e3c9;font-weight:900}
+.qa-locked{margin-top:8px}
+.qa-note{display:grid;gap:6px}
+.qa-note .qa-answer{margin-left:10px}
+/* 핫스팟: 그림 밖 대상(점선·하늘색) / 잠김(점선·회색, 누르면 열림 조건 안내) */
+.scene .hotspot .hotspot-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25}
+.scene .hotspot-note{font-size:10px;font-weight:700;color:#bcd6ee;letter-spacing:0}
+.scene .hotspot.hotspot-offscene{border-style:dashed;border-color:#9ccbf0;background:#0e1a2ef0}
+.scene .hotspot.hotspot-offscene .hotspot-pin{background:#9ccbf0;font-size:9px}
+.scene .hotspot.locked{border-style:dashed;border-color:#8d97ad;background:#20293ce8}
+.scene .hotspot.locked .hotspot-pin{background:#6d7891;font-size:9px}
+.scene .hotspot.locked .hotspot-note{color:#e5cf9f}
+@media(max-width:520px){.scene .hotspot{padding:6px 10px;gap:6px}.scene .hotspot-note{font-size:9px}}

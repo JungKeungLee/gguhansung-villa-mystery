@@ -59,7 +59,13 @@ function checkData(item, ctx) {
     const [pm, ps] = position.split(':').map(Number); add(pm * 60 + ps < lm * 60 + ls, `재생 위치 ${position} < 길이 ${length}`);
   }
   for (const r of item.refs || []) add(fs.existsSync(path.join(ROOT, r)), `참조 파일 ${r}`);
-  if (item.current) add(fs.existsSync(path.join(ROOT, item.current)), `기존 이미지 ${item.current}`);
+  // new_evidence: 게임에 아직 없는 새 증거에만 쓰는 표시. current는 출력 파일명(게임에 넣을 경로)으로만 쓴다.
+  // 기존 증거(표시 없음)의 파일 누락은 계속 실패. 표시가 있는데 파일이 이미 게임에 있으면 표시가 잘못된 것이므로 실패
+  const curExists = item.current ? fs.existsSync(path.join(ROOT, item.current)) : false;
+  if (item.current && item.new_evidence) {
+    if (curExists) add(false, `new_evidence 표시 오류: ${item.current}가 이미 게임에 있음(기존 증거면 표시 제거)`);
+    else add(true, `새 증거: ${item.current}는 게임에 아직 없음(출력 파일명으로만 사용)`, 'WARN');
+  } else if (item.current) add(curExists, `기존 이미지 ${item.current}`);
   if (String(item.status).startsWith('blocked')) add(true, `제작 상태: ${item.status} → 완성본 합성 불가(샘플만 가능)`, 'WARN');
   else if (item.status !== 'ready') add(true, `제작 상태: ${item.status} → 조건 확인 후 제작(SPEC §1)`, 'WARN');
   return res;

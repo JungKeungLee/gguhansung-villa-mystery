@@ -5,7 +5,7 @@
 ## 주요 파일
 - 챕터별 코드: `index.html` + `game.js` + `styles.css`(챕터 1), `chapterN.html/js/css`(챕터 2~5). `chapter2.css`는 챕터 2~5가 함께 씁니다.
 - 이미지: `assets/characters/`(인물), `assets/backgrounds/`(배경·엔딩), `assets/evidence/`(증거)
-- AI 질문: `api/gemini-chat.js`(챕터 2만 사용). PR #9(OpenAI 기반)는 병합하지 않은 상태입니다.
+- 질문: 선택형 Q&A(`qa-data.js` 데이터 + `qa-core.js` 처리, 챕터 2~4). AI·서버 호출 없음. PR #9(AI 질문)는 이 방식으로 대체 예정이며 병합하지 않은 상태입니다.
 
 ## 기준 문서
 스포일러가 포함되어 있으며, 필요할 때 해당 부분만 읽습니다.
